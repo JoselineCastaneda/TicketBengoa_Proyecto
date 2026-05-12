@@ -1,0 +1,402 @@
+.seleccion-page {
+  min-height: 100vh;
+  background: #f5f7fb;
+  padding: 32px 30px 56px;
+}
+
+.seleccion-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.seleccion-header h1 {
+  color: #0f172a;
+  font-size: 2.3rem;
+  margin-bottom: 8px;
+}
+
+.seleccion-header p {
+  color: #64748b;
+}
+
+.contador-reserva {
+  background: #fff7ed;
+  color: #9a3412;
+  padding: 14px 18px;
+  border-radius: 16px;
+  text-align: center;
+  border: 1px solid #fed7aa;
+}
+
+.contador-reserva span {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.contador-reserva strong {
+  font-size: 1.8rem;
+}
+
+.seleccion-success,
+.seleccion-error,
+.seleccion-message {
+  padding: 14px 16px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  font-weight: 700;
+}
+
+.seleccion-success {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.seleccion-error {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.seleccion-message {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.seleccion-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+.seleccion-mapa-card,
+.resumen-compra {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.zona-tabs {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.zona-tab {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  padding: 11px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-weight: 800;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+}
+
+.zona-tab span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.zona-tab:hover {
+  border-color: #2563eb;
+}
+
+.zona-tab-activa {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-color: #2563eb;
+}
+
+.zona-tab:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.leyenda-asientos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 18px;
+  color: #475569;
+  font-size: 14px;
+}
+
+.leyenda-asientos span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.color {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.color.disponible {
+  background: #2563eb;
+}
+
+.color.reservado {
+  background: #facc15;
+}
+
+.color.vendido {
+  background: #16a34a;
+}
+
+.color.seleccionado {
+  background: #9333ea;
+}
+
+.color.inhabilitado {
+  background: #94a3b8;
+}
+
+.estadio-box {
+  border-radius: 20px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 22px;
+  min-height: 480px;
+}
+
+.escenario {
+  max-width: 420px;
+  margin: 0 auto 28px;
+  background: #0f172a;
+  color: #ffffff;
+  text-align: center;
+  padding: 14px;
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+.asientos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+  gap: 8px;
+}
+
+.asiento {
+  width: 100%;
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.asiento-disponible {
+  background: #2563eb;
+}
+
+.asiento-reservado {
+  background: #facc15;
+  color: #78350f;
+  cursor: not-allowed;
+}
+
+.asiento-vendido {
+  background: #16a34a;
+  cursor: not-allowed;
+}
+
+.asiento-inhabilitado {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.asiento-seleccionado {
+  background: #9333ea;
+}
+
+.asiento:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.18);
+}
+
+.resumen-compra {
+  position: sticky;
+  top: 20px;
+}
+
+.resumen-compra h2 {
+  color: #0f172a;
+  font-size: 1.5rem;
+  margin-bottom: 18px;
+}
+
+.resumen-evento {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 18px;
+}
+
+.resumen-evento p {
+  color: #475569;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.resumen-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 90px;
+  margin-bottom: 18px;
+}
+
+.resumen-vacio {
+  color: #64748b;
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.resumen-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.resumen-item div {
+  display: flex;
+  flex-direction: column;
+}
+
+.resumen-item strong {
+  color: #0f172a;
+}
+
+.resumen-item span {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.resumen-total {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resumen-total span {
+  color: #475569;
+  font-weight: 800;
+}
+
+.resumen-total strong {
+  color: #0f172a;
+  font-size: 1.7rem;
+}
+
+.btn-reservar,
+.btn-pagar,
+.btn-cancelar-reserva {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.btn-reservar,
+.btn-pagar {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.btn-reservar:hover,
+.btn-pagar:hover {
+  background: #1d4ed8;
+}
+
+.btn-reservar:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.btn-cancelar-reserva {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.resumen-nota {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+
+@media (max-width: 1000px) {
+  .seleccion-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .resumen-compra {
+    position: static;
+  }
+}
+
+@media (max-width: 700px) {
+  .seleccion-page {
+    padding: 22px 14px 50px;
+  }
+
+  .seleccion-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .seleccion-header h1 {
+    font-size: 1.9rem;
+  }
+
+  .contador-reserva {
+    text-align: left;
+  }
+
+  .zona-tab {
+    min-width: 135px;
+  }
+
+  .estadio-box {
+    padding: 16px;
+    min-height: 360px;
+  }
+
+  .asientos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
+    gap: 7px;
+  }
+
+  .asiento {
+    border-radius: 8px;
+    font-size: 11px;
+  }
+}
