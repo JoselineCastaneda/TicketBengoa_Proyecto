@@ -7,6 +7,7 @@ const API_URL = "http://localhost:3000/api";
 const ZonasAdmin = () => {
   const [eventos, setEventos] = useState([]);
   const [zonas, setZonas] = useState([]);
+  const [preciosOriginales, setPreciosOriginales] = useState({});
   const [eventoSeleccionado, setEventoSeleccionado] = useState("");
   const [eventoInfo, setEventoInfo] = useState(null);
 
@@ -40,6 +41,7 @@ const ZonasAdmin = () => {
   const obtenerZonas = async (idConcierto) => {
     if (!idConcierto) {
       setZonas([]);
+      setPreciosOriginales({});
       setEventoInfo(null);
       return;
     }
@@ -65,8 +67,15 @@ const ZonasAdmin = () => {
         return;
       }
 
+      const originales = {};
+
+      data.zonas.forEach((zona) => {
+        originales[zona.id_zona] = zona.precio_zona;
+      });
+
       setEventoInfo(data.evento);
       setZonas(data.zonas);
+      setPreciosOriginales(originales);
     } catch (error) {
       setError("Error al cargar zonas del evento");
     } finally {
@@ -99,13 +108,45 @@ const ZonasAdmin = () => {
           ? { ...zona, precio_zona: nuevoPrecio }
           : zona
       )
-  );
-};
+    );
+  };
+
+  const cancelarCambioPrecio = (idZona) => {
+    setMensaje("");
+    setError("");
+
+    setZonas((prevZonas) =>
+      prevZonas.map((zona) =>
+        zona.id_zona === idZona
+          ? {
+              ...zona,
+              precio_zona: preciosOriginales[idZona],
+            }
+          : zona
+      )
+    );
+  };
+
+  const tieneCambio = (zona) => {
+    return Number(zona.precio_zona) !== Number(preciosOriginales[zona.id_zona]);
+  };
 
   const actualizarPrecioZona = async (zona) => {
     setMensaje("");
     setError("");
     setGuardandoId(zona.id_zona);
+
+    if (zona.precio_zona === "" || zona.precio_zona === null) {
+      setError("El precio de la zona es obligatorio");
+      setGuardandoId(null);
+      return;
+    }
+
+    if (Number(zona.precio_zona) < 0) {
+      setError("El precio no puede ser negativo");
+      setGuardandoId(null);
+      return;
+    }
 
     try {
       const response = await fetch(`${API_URL}/zonas/${zona.id_zona}`, {
@@ -127,7 +168,6 @@ const ZonasAdmin = () => {
       }
 
       setMensaje(`Precio actualizado para ${zona.nombre_zona}`);
-
       obtenerZonas(eventoSeleccionado);
     } catch (error) {
       setError("Error al actualizar precio");
@@ -160,7 +200,6 @@ const ZonasAdmin = () => {
       }
 
       setMensaje("Zonas y asientos creados correctamente");
-
       obtenerZonas(eventoSeleccionado);
     } catch (error) {
       setError("Error al inicializar zonas");
@@ -182,24 +221,17 @@ const ZonasAdmin = () => {
 
       <div className="zonas-header-card">
         <div>
-          <label className="zonas-label">
-            Seleccionar evento
-          </label>
+          <label className="zonas-label">Seleccionar evento</label>
 
           <select
             className="zonas-select"
             value={eventoSeleccionado}
             onChange={handleEventoChange}
           >
-            <option value="">
-              Seleccione un evento
-            </option>
+            <option value="">Seleccione un evento</option>
 
             {eventos.map((evento) => (
-              <option
-                key={evento.id_concierto}
-                value={evento.id_concierto}
-              >
+              <option key={evento.id_concierto} value={evento.id_concierto}>
                 {evento.nombre_concierto} - {evento.nombre_artista}
               </option>
             ))}
@@ -209,71 +241,51 @@ const ZonasAdmin = () => {
         {eventoInfo && (
           <div className="zonas-evento-info">
             <p>
-              <strong>Evento:</strong>{" "}
-              {eventoInfo.nombre_concierto}
+              <strong>Evento:</strong> {eventoInfo.nombre_concierto}
             </p>
 
-            <span
-              className={`estado-badge estado-${eventoInfo.estado}`}
-            >
+            <span className={`estado-badge estado-${eventoInfo.estado}`}>
               {eventoInfo.estado}
             </span>
           </div>
         )}
       </div>
 
-      {mensaje && (
-        <p className="admin-success">{mensaje}</p>
-      )}
-
-      {error && (
-        <p className="admin-error">{error}</p>
-      )}
+      {mensaje && <p className="admin-success">{mensaje}</p>}
+      {error && <p className="admin-error">{error}</p>}
 
       {eventoInfo && !puedeEditar && (
         <div className="zonas-warning">
-          Este evento ya no está en borrador.
-          Los precios están bloqueados.
+          Este evento ya no está en borrador. Los precios están bloqueados.
         </div>
       )}
 
       {!eventoSeleccionado && (
         <div className="zonas-empty">
-          Selecciona un evento para administrar
-          sus zonas y precios.
+          Selecciona un evento para administrar sus zonas y precios.
         </div>
       )}
 
-      {loading && (
+      {loading && <div className="zonas-empty">Cargando zonas...</div>}
+
+      {eventoSeleccionado && !loading && zonas.length === 0 && (
         <div className="zonas-empty">
-          Cargando zonas...
+          <h3>Este evento todavía no tiene zonas</h3>
+
+          <p>
+            Inicializa automáticamente las zonas, capacidades y asientos del
+            estadio.
+          </p>
+
+          <button
+            className="zonas-init-btn"
+            onClick={inicializarZonas}
+            disabled={inicializando}
+          >
+            {inicializando ? "Inicializando..." : "Inicializar zonas y asientos"}
+          </button>
         </div>
       )}
-
-      {eventoSeleccionado &&
-        !loading &&
-        zonas.length === 0 && (
-          <div className="zonas-empty">
-            <h3>
-              Este evento todavía no tiene zonas
-            </h3>
-
-            <p>
-              Inicializa automáticamente las zonas,
-              capacidades y asientos del estadio.
-            </p>
-
-            <button
-              className="zonas-init-btn"
-              onClick={inicializarZonas}
-              disabled={inicializando}
-            >
-              {inicializando
-                ? "Inicializando..."
-                : "Inicializar zonas y asientos"}
-            </button>
-          </div>
-        )}
 
       {zonas.length > 0 && (
         <>
@@ -296,75 +308,69 @@ const ZonasAdmin = () => {
 
           <div className="zonas-grid">
             {zonas.map((zona) => (
-              <div
-                className="zona-card"
-                key={zona.id_zona}
-              >
+              <div className="zona-card" key={zona.id_zona}>
                 <div className="zona-card-header">
                   <h3>{zona.nombre_zona}</h3>
-
-                  <span>
-                    ID {zona.id_zona}
-                  </span>
+                  
                 </div>
 
-                <p className="zona-desc">
-                  {zona.descripcion_zona}
-                </p>
+                <p className="zona-desc">{zona.descripcion_zona}</p>
 
                 <div className="zona-stats">
                   <div>
                     <small>Capacidad</small>
-
-                    <strong>
-                      {zona.capacidad_zona}
-                    </strong>
+                    <strong>{zona.capacidad_zona}</strong>
                   </div>
 
                   <div>
-                    <small>
-                      Asientos registrados
-                    </small>
-
-                    <strong>
-                      {zona.total_asientos}
-                    </strong>
+                    <small>Asientos registrados</small>
+                    <strong>{zona.total_asientos}</strong>
                   </div>
                 </div>
 
-                <label className="zonas-label">
-                  Precio de zona
-                </label>
+                <label className="zonas-label">Precio de zona</label>
 
                 <input
-                  className="zona-precio-input"
+                  className={`zona-precio-input ${
+                    Number(zona.precio_zona) === 0 ? "zona-precio-pendiente" : ""
+                  }`}
                   type="number"
                   min="0"
                   step="0.01"
                   value={zona.precio_zona}
                   disabled={!puedeEditar}
-                  onChange={(e) =>
-                    cambiarPrecio(
-                      zona.id_zona,
-                      e.target.value
-                    )
-                  }
+                  onChange={(e) => cambiarPrecio(zona.id_zona, e.target.value)}
                 />
 
-                <button
-                  className="zona-save-btn"
-                  disabled={
-                    !puedeEditar ||
-                    guardandoId === zona.id_zona
-                  }
-                  onClick={() =>
-                    actualizarPrecioZona(zona)
-                  }
-                >
-                  {guardandoId === zona.id_zona
-                    ? "Guardando..."
-                    : "Guardar precio"}
-                </button>
+                {Number(zona.precio_zona) === 0 && (
+                  <p className="zona-warning-price">
+                    Precio pendiente de configurar
+                  </p>
+                )}
+
+                {tieneCambio(zona) && (
+                  <p className="zona-change-text">Tienes cambios sin guardar</p>
+                )}
+
+                <div className="zona-actions">
+                  <button
+                    className="zona-save-btn"
+                    disabled={
+                      !puedeEditar || guardandoId === zona.id_zona || !tieneCambio(zona)
+                    }
+                    onClick={() => actualizarPrecioZona(zona)}
+                  >
+                    {guardandoId === zona.id_zona ? "Guardando..." : "Guardar"}
+                  </button>
+
+                  <button
+                    className="zona-cancel-btn"
+                    disabled={!puedeEditar || !tieneCambio(zona)}
+                    onClick={() => cancelarCambioPrecio(zona.id_zona)}
+                  >
+                    Cancelar
+                  </button>
+                </div>
               </div>
             ))}
           </div>

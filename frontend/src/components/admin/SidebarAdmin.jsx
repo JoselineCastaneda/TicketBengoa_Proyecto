@@ -11,10 +11,11 @@ import {
 } from "react-icons/fi";
 
 import { useNavigate } from "react-router-dom";
-import { cerrarSesion } from "../../auth/auth";
+import { cerrarSesion, obtenerUsuarioActivo } from "../../auth/auth";
 
 const SidebarAdmin = ({ setVista, vistaActiva }) => {
   const navigate = useNavigate();
+  const usuario = obtenerUsuarioActivo();
 
   const handleLogout = () => {
     cerrarSesion();
@@ -31,7 +32,9 @@ const SidebarAdmin = ({ setVista, vistaActiva }) => {
       <nav className="sidebar-menu">
         <button
           onClick={() => setVista("dashboard")}
-          className={`sidebar-item ${vistaActiva === "dashboard" ? "active" : ""}`}
+          className={`sidebar-item ${
+            vistaActiva === "dashboard" ? "active" : ""
+          }`}
         >
           <FiGrid />
           <span>Panel de Control</span>
@@ -39,7 +42,9 @@ const SidebarAdmin = ({ setVista, vistaActiva }) => {
 
         <button
           onClick={() => setVista("artistas")}
-          className={`sidebar-item ${vistaActiva === "artistas" ? "active" : ""}`}
+          className={`sidebar-item ${
+            vistaActiva === "artistas" ? "active" : ""
+          }`}
         >
           <FiMic />
           <span>Artistas</span>
@@ -47,7 +52,9 @@ const SidebarAdmin = ({ setVista, vistaActiva }) => {
 
         <button
           onClick={() => setVista("eventos")}
-          className={`sidebar-item ${vistaActiva === "eventos" ? "active" : ""}`}
+          className={`sidebar-item ${
+            vistaActiva === "eventos" ? "active" : ""
+          }`}
         >
           <FiCalendar />
           <span>Eventos</span>
@@ -55,7 +62,9 @@ const SidebarAdmin = ({ setVista, vistaActiva }) => {
 
         <button
           onClick={() => setVista("zonas")}
-          className={`sidebar-item ${vistaActiva === "zonas" ? "active" : ""}`}
+          className={`sidebar-item ${
+            vistaActiva === "zonas" ? "active" : ""
+          }`}
         >
           <FiMap />
           <span>Zonas por Evento</span>
@@ -63,7 +72,9 @@ const SidebarAdmin = ({ setVista, vistaActiva }) => {
 
         <button
           onClick={() => setVista("ventas")}
-          className={`sidebar-item ${vistaActiva === "ventas" ? "active" : ""}`}
+          className={`sidebar-item ${
+            vistaActiva === "ventas" ? "active" : ""
+          }`}
         >
           <FiDollarSign />
           <span>Historial de Ventas</span>
@@ -71,7 +82,9 @@ const SidebarAdmin = ({ setVista, vistaActiva }) => {
 
         <button
           onClick={() => setVista("usuarios")}
-          className={`sidebar-item ${vistaActiva === "usuarios" ? "active" : ""}`}
+          className={`sidebar-item ${
+            vistaActiva === "usuarios" ? "active" : ""
+          }`}
         >
           <FiUsers />
           <span>Gestión de Usuarios</span>
@@ -79,7 +92,9 @@ const SidebarAdmin = ({ setVista, vistaActiva }) => {
 
         <button
           onClick={() => setVista("clientes")}
-          className={`sidebar-item ${vistaActiva === "clientes" ? "active" : ""}`}
+          className={`sidebar-item ${
+            vistaActiva === "clientes" ? "active" : ""
+          }`}
         >
           <FiUser />
           <span>Clientes</span>
@@ -87,17 +102,39 @@ const SidebarAdmin = ({ setVista, vistaActiva }) => {
 
         <button
           onClick={() => setVista("config")}
-          className={`sidebar-item ${vistaActiva === "config" ? "active" : ""}`}
+          className={`sidebar-item ${
+            vistaActiva === "config" ? "active" : ""
+          }`}
         >
           <FiSettings />
           <span>Configuración</span>
         </button>
       </nav>
 
-      <button onClick={handleLogout} className="sidebar-item logout-btn">
-        <FiLogOut />
-        <span>Cerrar Sesión</span>
-      </button>
+      <div className="sidebar-user-box">
+        <div className="sidebar-user-top">
+          <div className="sidebar-user-avatar">
+            {usuario?.nombre
+              ? usuario.nombre.charAt(0).toUpperCase()
+              : "A"}
+          </div>
+
+          <div className="sidebar-user-info">
+            <strong>
+              {usuario?.nombre
+                ? `${usuario.nombre} ${usuario.apellido || ""}`
+                : "Administrador"}
+            </strong>
+
+            <span>{usuario?.rol || "administrador"}</span>
+          </div>
+        </div>
+
+        <button onClick={handleLogout} className="sidebar-logout-btn">
+          <FiLogOut />
+          <span>Cerrar sesión</span>
+        </button>
+      </div>
     </aside>
   );
 };

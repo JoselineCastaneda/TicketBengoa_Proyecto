@@ -57,7 +57,8 @@ const getEventosActivos = async (req, res) => {
         c.hora,
         c.imagen,
         c.estado,
-        a.nombre_artista
+        a.nombre_artista,
+        a.genero_musical
       FROM conciertos c
       INNER JOIN artistas a
         ON c.id_artista = a.id_artista
@@ -94,7 +95,8 @@ const getDetalleEvento = async (req, res) => {
         c.hora,
         c.imagen,
         c.estado,
-        a.nombre_artista
+        a.nombre_artista,
+        a.genero_musical
       FROM conciertos c
       INNER JOIN artistas a
         ON c.id_artista = a.id_artista
@@ -169,7 +171,8 @@ const getAsientosEvento = async (req, res) => {
         c.hora,
         c.imagen,
         c.estado,
-        a.nombre_artista
+        a.nombre_artista,
+        a.genero_musical
       FROM conciertos c
       INNER JOIN artistas a
         ON c.id_artista = a.id_artista

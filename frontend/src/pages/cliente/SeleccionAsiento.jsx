@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { obtenerToken } from "../../auth/auth";
 import ClienteNavbar from "../../components/cliente/ClienteNavbar";
-import ClienteFooter from "../../components/cliente/ClienteFooter";
+
 import "../../styles/cliente/seleccionAsientos.css";
 
 const API_URL = "http://localhost:3000/api";
@@ -244,7 +244,7 @@ const SeleccionAsiento = () => {
         <main className="seleccion-page">
           <div className="seleccion-message">Cargando asientos...</div>
         </main>
-        <ClienteFooter />
+        
       </>
     );
   }
@@ -393,7 +393,7 @@ const SeleccionAsiento = () => {
         </section>
       </main>
 
-      <ClienteFooter />
+      
     </>
   );
 };

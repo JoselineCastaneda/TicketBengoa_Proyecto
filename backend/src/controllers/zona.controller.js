@@ -4,55 +4,55 @@ const zonasBase = [
   {
     nombre_zona: 'Zona VIP',
     descripcion_zona: 'Zona superior izquierda',
-    precio_zona: 40.00,
+    precio_zona: 0.00,
     capacidad_zona: 180
   },
   {
     nombre_zona: 'Zona Ejecutiva',
     descripcion_zona: 'Zona superior central',
-    precio_zona: 30.00,
+    precio_zona: 0.00,
     capacidad_zona: 360
   },
   {
     nombre_zona: 'Zona Platinum',
     descripcion_zona: 'Zona superior derecha',
-    precio_zona: 35.00,
+    precio_zona: 0.00,
     capacidad_zona: 180
   },
   {
     nombre_zona: 'Bloque A',
     descripcion_zona: 'Bloque central izquierdo',
-    precio_zona: 22.00,
+    precio_zona: 0.00,
     capacidad_zona: 126
   },
   {
     nombre_zona: 'Bloque B',
     descripcion_zona: 'Bloque central izquierdo interno',
-    precio_zona: 22.00,
+    precio_zona: 0.00,
     capacidad_zona: 126
   },
   {
     nombre_zona: 'Bloque F',
-    descripcion_zona: 'Bloque central derecho interno',
-    precio_zona: 22.00,
+    descripcion_zona: 'Bloque central derecho',
+    precio_zona: 0.00,
     capacidad_zona: 126
   },
   {
     nombre_zona: 'Bloque E',
-    descripcion_zona: 'Bloque central derecho',
-    precio_zona: 22.00,
+    descripcion_zona: 'Bloque central derecho interno',
+    precio_zona: 0.00,
     capacidad_zona: 126
   },
   {
     nombre_zona: 'Zona General A',
     descripcion_zona: 'Bloque inferior general izquierdo',
-    precio_zona: 15.00,
+    precio_zona: 0.00,
     capacidad_zona: 90
   },
   {
     nombre_zona: 'Zona General B',
     descripcion_zona: 'Bloque inferior general derecho',
-    precio_zona: 15.00,
+    precio_zona: 0.00,
     capacidad_zona: 90
   }
 ]

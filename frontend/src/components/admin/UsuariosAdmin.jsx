@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { obtenerToken } from "../../auth/auth";
+import { obtenerToken, obtenerUsuarioActivo } from "../../auth/auth";
 import "../../styles/admin/usuarios.css";
 
 const API_URL = "http://localhost:3000/api";
@@ -23,6 +23,7 @@ const UsuariosAdmin = () => {
   const [loading, setLoading] = useState(false);
 
   const token = obtenerToken();
+  const usuarioActivo = obtenerUsuarioActivo();
 
   const obtenerUsuarios = async () => {
     try {
@@ -112,20 +113,25 @@ const UsuariosAdmin = () => {
     }
   };
 
-  const cambiarEstado = async (id_usuario, estado) => {
+  const cambiarEstado = async (usuario, estadoNuevo) => {
     setMensaje("");
     setError("");
 
+    if (Number(usuarioActivo?.id_usuario) === Number(usuario.id_usuario)) {
+      setError("No puedes cambiar el estado de tu propio usuario");
+      return;
+    }
+
     try {
       const response = await fetch(
-        `${API_URL}/usuarios/${id_usuario}/estado`,
+        `${API_URL}/usuarios/${usuario.id_usuario}/estado`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ estado }),
+          body: JSON.stringify({ estado: estadoNuevo }),
         }
       );
 
@@ -153,10 +159,7 @@ const UsuariosAdmin = () => {
     `.toLowerCase();
 
     const coincideBusqueda = texto.includes(busqueda.toLowerCase());
-
-    const coincideRol =
-      filtroRol === "todos" || usuario.rol === filtroRol;
-
+    const coincideRol = filtroRol === "todos" || usuario.rol === filtroRol;
     const coincideEstado =
       filtroEstado === "todos" || usuario.estado === filtroEstado;
 
@@ -245,21 +248,18 @@ const UsuariosAdmin = () => {
         <table className="usuarios-table">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Usuario</th>
               <th>Correo</th>
               <th>Rol</th>
               <th>Estado</th>
               <th>Fecha registro</th>
-              <th>Acción</th>
+              <th>Cambiar estado</th>
             </tr>
           </thead>
 
           <tbody>
             {usuariosFiltrados.map((usuario) => (
               <tr key={usuario.id_usuario}>
-                <td>{usuario.id_usuario}</td>
-
                 <td>
                   {usuario.nombre} {usuario.apellido}
                 </td>
@@ -288,9 +288,11 @@ const UsuariosAdmin = () => {
                   <select
                     className="estado-select"
                     value={usuario.estado}
-                    onChange={(e) =>
-                      cambiarEstado(usuario.id_usuario, e.target.value)
+                    disabled={
+                      Number(usuarioActivo?.id_usuario) ===
+                      Number(usuario.id_usuario)
                     }
+                    onChange={(e) => cambiarEstado(usuario, e.target.value)}
                   >
                     <option value="activo">Activo</option>
                     <option value="inactivo">Inactivo</option>
@@ -302,7 +304,7 @@ const UsuariosAdmin = () => {
 
             {usuariosFiltrados.length === 0 && (
               <tr>
-                <td colSpan="7" className="tabla-vacia">
+                <td colSpan="6" className="tabla-vacia">
                   No hay usuarios que coincidan con la búsqueda.
                 </td>
               </tr>

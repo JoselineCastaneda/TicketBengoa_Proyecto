@@ -21,6 +21,11 @@
   min-width: 260px;
 }
 
+.usuarios-toolbar input:focus,
+.usuarios-toolbar select:focus {
+  border-color: #2563eb;
+}
+
 .usuarios-toolbar span {
   background: #dbeafe;
   color: #1d4ed8;
@@ -91,11 +96,12 @@
 }
 
 .usuarios-table th {
-  background: #f8fafc;
-  color: #334155;
-  text-align: left;
-  padding: 14px;
+  background: #0b63d8;
+  color: #ffffff;
+  text-align: center;
+  padding: 16px 14px;
   font-size: 14px;
+  font-weight: 800;
 }
 
 .usuarios-table td {
@@ -103,6 +109,13 @@
   border-bottom: 1px solid #e2e8f0;
   color: #334155;
   font-size: 14px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.usuarios-table td:nth-child(1),
+.usuarios-table td:nth-child(2) {
+  text-align: left;
 }
 
 .usuarios-table tr:hover {
@@ -112,10 +125,11 @@
 .usuario-rol,
 .usuario-estado {
   display: inline-block;
-  padding: 6px 10px;
+  min-width: 90px;
+  padding: 7px 12px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: capitalize;
 }
 
@@ -134,12 +148,46 @@
   color: #7e22ce;
 }
 
+.estado-activo {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.estado-inactivo {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.estado-bloqueado {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
 .estado-select {
   padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid #cbd5e1;
   outline: none;
   background: white;
+  font-weight: 600;
+}
+
+.estado-select:focus {
+  border-color: #2563eb;
+}
+
+.estado-select:disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.tabla-vacia {
+  text-align: center;
+  color: #64748b;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 14px;
 }
 
 @media (max-width: 900px) {
@@ -149,6 +197,10 @@
 
   .usuarios-form button {
     grid-column: span 1;
+  }
+
+  .usuarios-table {
+    min-width: 850px;
   }
 }
 

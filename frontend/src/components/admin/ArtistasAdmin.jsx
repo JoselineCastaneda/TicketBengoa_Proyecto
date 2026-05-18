@@ -103,6 +103,11 @@ const ArtistasAdmin = () => {
     setDescripcion(artista.descripcion_artista || "");
     setMensaje("");
     setError("");
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   const eliminarArtista = async (id) => {
@@ -211,7 +216,6 @@ const ArtistasAdmin = () => {
         <table>
           <thead>
             <tr>
-              <th>ID</th>
               <th>Nombre</th>
               <th>Nacionalidad</th>
               <th>Género</th>
@@ -223,11 +227,16 @@ const ArtistasAdmin = () => {
           <tbody>
             {artistasFiltrados.map((artista) => (
               <tr key={artista.id_artista}>
-                <td>{artista.id_artista}</td>
                 <td>{artista.nombre_artista}</td>
+
                 <td>{artista.nacionalidad_artista}</td>
+
                 <td>{artista.genero_musical}</td>
-                <td>{artista.descripcion_artista}</td>
+
+                <td className="descripcion-limitada">
+                  {artista.descripcion_artista}
+                </td>
+
                 <td>
                   <div className="acciones-tabla">
                     <button
@@ -250,7 +259,7 @@ const ArtistasAdmin = () => {
 
             {artistasFiltrados.length === 0 && (
               <tr>
-                <td colSpan="6" className="tabla-vacia">
+                <td colSpan="5" className="tabla-vacia">
                   No hay artistas registrados o no coinciden con la búsqueda.
                 </td>
               </tr>

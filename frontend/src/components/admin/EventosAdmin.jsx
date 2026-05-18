@@ -173,6 +173,12 @@ const EventosAdmin = () => {
     setImagenActual(evento.imagen || "");
     setMensaje("");
     setError("");
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
   };
 
   const eliminarEvento = async (id) => {

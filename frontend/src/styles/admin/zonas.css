@@ -4,6 +4,7 @@
   padding: 22px;
   box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
   margin-bottom: 22px;
+
   display: flex;
   justify-content: space-between;
   gap: 18px;
@@ -22,10 +23,14 @@
 .zona-precio-input {
   width: 100%;
   padding: 13px 14px;
+
   border: 1px solid #cbd5e1;
   border-radius: 12px;
+
   outline: none;
+
   font-size: 15px;
+
   background: #ffffff;
 }
 
@@ -48,87 +53,220 @@
 .zonas-warning {
   background: #fef3c7;
   color: #92400e;
+
   padding: 13px 15px;
+
   border-radius: 12px;
+
   margin-bottom: 18px;
+
   font-weight: 600;
 }
 
 .zonas-empty {
   background: #ffffff;
+
   padding: 30px;
+
   border-radius: 18px;
+
   color: #64748b;
+
   text-align: center;
+
   box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
 }
+
+/* =========================================
+   RESUMEN SUPERIOR
+========================================= */
+
+.zonas-resumen {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 18px;
+
+  margin-bottom: 22px;
+}
+
+.zonas-resumen-card {
+  padding: 18px;
+
+  border-radius: 18px;
+
+  background: linear-gradient(135deg, #285cec, #1041c5);
+
+  border: 2px solid #2a59a5;
+
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.zonas-resumen-card:hover {
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 18px 35px rgba(37, 99, 235, 0.22),
+    0 0 24px rgba(59, 130, 246, 0.18);
+}
+
+.zonas-resumen-card small {
+  display: block;
+
+  text-align: center;
+
+  color: #dbeafe;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  margin-bottom: 10px;
+
+  letter-spacing: 0.3px;
+}
+
+.zonas-resumen-card strong {
+  display: block;
+
+  text-align: center;
+
+  color: #ffffff;
+
+  font-size: 22px;
+  font-weight: 800;
+
+  text-transform: capitalize;
+}
+
+/* =========================================
+   GRID ZONAS
+========================================= */
 
 .zonas-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+
   gap: 18px;
 }
 
+/* =========================================
+   CARD ZONA
+========================================= */
+
 .zona-card {
   background: #ffffff;
+
   border-radius: 20px;
+
   padding: 20px;
+
+  border: 3px solid transparent;
+
   box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
 }
+
+.zona-card:hover {
+  transform: translateY(-5px);
+
+  border-color: rgba(59, 130, 246, 0.55);
+
+  box-shadow:
+    0 18px 40px rgba(37, 99, 235, 0.16),
+    0 0 28px rgba(96, 165, 250, 0.22);
+}
+
+/* =========================================
+   HEADER ZONA
+========================================= */
 
 .zona-card-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
+
+  margin-bottom: 8px;
 }
 
 .zona-card-header h3 {
   color: #0f172a;
-  font-size: 20px;
-}
 
-.zona-card-header span {
-  background: #e0e7ff;
-  color: #3730a3;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 5px 8px;
-  border-radius: 999px;
+  font-size: 18px;
+  font-weight: 800;
+
+  text-align: center;
+
+  width: 100%;
 }
 
 .zona-desc {
   color: #64748b;
+
   font-size: 14px;
-  min-height: 40px;
-  margin-bottom: 16px;
+
+  text-align: center;
+
+  margin-bottom: 18px;
 }
+
+/* =========================================
+   ESTADÍSTICAS
+========================================= */
 
 .zona-stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+
+  gap: 10px;
+
   margin-bottom: 16px;
 }
 
 .zona-stats div {
-  background: #f8fafc;
-  border-radius: 14px;
-  padding: 12px;
+  background: #e2e8f0;
+
+  border: 1px solid #cbd5e1;
+
+  border-radius: 16px;
+
+  padding: 8px;
 }
 
 .zona-stats small {
   display: block;
-  color: #64748b;
-  font-size: 12px;
-  margin-bottom: 5px;
+
+  text-align: center;
+
+  color: #475569;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  margin-bottom: 4px;
 }
 
 .zona-stats strong {
+  display: block;
+
+  text-align: center;
+
   color: #0f172a;
-  font-size: 18px;
+
+  font-size: 16px;
+  font-weight: 800;
 }
+
+/* =========================================
+   INPUT PRECIO
+========================================= */
 
 .zona-precio-input:disabled {
   background: #f1f5f9;
@@ -136,27 +274,122 @@
   cursor: not-allowed;
 }
 
-.zona-save-btn {
-  width: 100%;
+.zona-precio-pendiente {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.zona-warning-price {
+  margin-top: 8px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  color: #b45309;
+}
+
+.zona-change-text {
+  margin-top: 8px;
+
+  font-size: 13px;
+
+  color: #2563eb;
+
+  font-weight: 700;
+}
+
+/* =========================================
+   BOTONES
+========================================= */
+
+.zona-actions {
+  display: flex;
+
+  gap: 10px;
+
   margin-top: 14px;
-  padding: 13px;
+}
+
+.zona-save-btn,
+.zona-cancel-btn {
+  flex: 1;
+
+  padding: 12px;
+
   border: none;
   border-radius: 12px;
-  background: #2563eb;
-  color: white;
-  font-size: 15px;
+
+  font-size: 14px;
   font-weight: 700;
+
   cursor: pointer;
+
+  transition: 0.25s ease;
+}
+
+.zona-save-btn {
+  background: #2563eb;
+  color: #ffffff;
 }
 
 .zona-save-btn:hover {
   background: #1d4ed8;
 }
 
-.zona-save-btn:disabled {
+.zona-cancel-btn {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.zona-cancel-btn:hover {
+  background: #cbd5e1;
+}
+
+.zona-save-btn:disabled,
+.zona-cancel-btn:disabled {
+  background: #94a3b8;
+  color: #ffffff;
+
+  cursor: not-allowed;
+
+  opacity: 0.75;
+}
+
+/* =========================================
+   BOTÓN INICIALIZAR
+========================================= */
+
+.zonas-init-btn {
+  margin-top: 18px;
+
+  padding: 13px 18px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #2563eb;
+
+  color: #ffffff;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.25s ease;
+}
+
+.zonas-init-btn:hover {
+  background: #1d4ed8;
+}
+
+.zonas-init-btn:disabled {
   background: #94a3b8;
   cursor: not-allowed;
 }
+
+/* =========================================
+   RESPONSIVE
+========================================= */
 
 @media (max-width: 768px) {
   .zonas-header-card {
@@ -172,60 +405,15 @@
     justify-content: space-between;
   }
 
+  .zonas-resumen {
+    grid-template-columns: 1fr;
+  }
+
   .zonas-grid {
     grid-template-columns: 1fr;
   }
-}
 
-.zonas-init-btn {
-  margin-top: 18px;
-  padding: 13px 18px;
-  border: none;
-  border-radius: 12px;
-  background: #2563eb;
-  color: #ffffff;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.zonas-init-btn:hover {
-  background: #1d4ed8;
-}
-
-.zonas-init-btn:disabled {
-  background: #94a3b8;
-  cursor: not-allowed;
-}
-
-.zonas-resumen {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 22px;
-}
-
-.zonas-resumen-card {
-  background: #ffffff;
-  padding: 18px;
-  border-radius: 18px;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-}
-
-.zonas-resumen-card small {
-  display: block;
-  color: #64748b;
-  font-size: 13px;
-  margin-bottom: 8px;
-}
-
-.zonas-resumen-card strong {
-  color: #0f172a;
-  font-size: 24px;
-  text-transform: capitalize;
-}
-
-@media (max-width: 768px) {
-  .zonas-resumen {
-    grid-template-columns: 1fr;
+  .zona-actions {
+    flex-direction: column;
   }
 }

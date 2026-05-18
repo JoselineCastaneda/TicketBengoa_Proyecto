@@ -30,13 +30,15 @@
 
 .sidebar-admin {
   width: 270px;
-  min-height: 100vh;
+  height: 100vh;
+  position: sticky;
+  top: 0;
   background: #020617;
-  color: #ffffff;
-  padding: 24px 18px;
+  padding: 22px 18px;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
+  border-right: 1px solid rgba(148, 163, 184, 0.12);
+  overflow: hidden;
 }
 
 .sidebar-logo {
@@ -66,6 +68,31 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  flex: 1;
+
+  overflow-y: auto;
+  padding-right: 4px;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.28) transparent;
+}
+
+.sidebar-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.22);
+  border-radius: 999px;
+  transition: background 0.25s ease;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.42);
 }
 
 .sidebar-item {
@@ -109,10 +136,69 @@
   color: #ffffff;
 }
 
-@media (min-width: 769px) {
-  .logout-btn {
-    margin-top: auto;
-  }
+.sidebar-user-box {
+  flex-shrink: 0;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #1e293b;
+}
+
+.sidebar-user-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.sidebar-user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #2563eb;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.sidebar-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-user-info strong {
+  color: #ffffff;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.sidebar-user-info span {
+  color: #94a3b8;
+  font-size: 13px;
+  text-transform: capitalize;
+}
+
+.sidebar-logout-btn {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  background: #7f1d1d;
+  color: #fecaca;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.sidebar-logout-btn:hover {
+  background: #dc2626;
+  color: #ffffff;
 }
 
 /* ================================
@@ -310,11 +396,12 @@
 }
 
 .tabla-artistas th {
-  text-align: left;
-  padding: 14px;
-  background: #f1f5f9;
-  color: #334155;
+  text-align: center;
+  padding: 16px 14px;
+  background: #0260da;
+  color: #ffffff;
   font-size: 14px;
+  font-weight: 800;
 }
 
 .tabla-artistas td {
@@ -323,6 +410,7 @@
   color: #334155;
   font-size: 14px;
   vertical-align: top;
+  text-align: center;
 }
 
 .tabla-artistas tr:hover {
@@ -335,6 +423,13 @@
   padding: 20px;
   background: #ffffff;
   border-radius: 14px;
+}
+
+.descripcion-limitada {
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ================================
@@ -351,15 +446,22 @@
   background: #ffffff;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-  transition: 0.2s ease;
   width: 100%;
   max-width: 340px;
+  border: 3px solid transparent;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  transition:
+    transform 0.38s ease,
+    box-shadow 0.38s ease,
+    border-color 0.38s ease;
 }
 
 .evento-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.13);
+  transform: translateY(-6px);
+  border-color: rgba(147, 51, 234, 0.72);
+  box-shadow:
+    0 18px 40px rgba(88, 28, 135, 0.22),
+    0 0 34px rgba(147, 51, 234, 0.28);
 }
 
 .evento-img-box {
@@ -423,7 +525,7 @@
 .estado-finalizado {
   background: #64748b;
 }
- 
+
 .estado-pospuesto {
   background: #f59e0b;
 }
@@ -561,12 +663,12 @@
   }
 
   .tabla-artistas table {
-    min-width: 760px;
+    min-width: 680px;
   }
 
   .eventos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 22px;
-}
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 22px;
+  }
 }

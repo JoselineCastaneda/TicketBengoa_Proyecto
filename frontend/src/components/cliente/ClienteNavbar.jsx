@@ -1,11 +1,22 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import {
+  FiLogOut,
+  FiUser,
+  FiMenu,
+  FiX,
+  FiCreditCard,
+  FiHome,
+  FiCalendar,
+} from "react-icons/fi";
 import { cerrarSesion } from "../../auth/auth";
 import "../../styles/cliente/cliente.css";
 
 const ClienteNavbar = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const navigate = useNavigate();
+
+  const usuario = JSON.parse(localStorage.getItem("usuarioActivo")) || null;
 
   const cerrarMenu = () => setMenuAbierto(false);
 
@@ -14,33 +25,63 @@ const ClienteNavbar = () => {
     navigate("/login");
   };
 
+  const inicialUsuario = usuario?.nombre
+    ? usuario.nombre.charAt(0).toUpperCase()
+    : "C";
+
+  const nombreUsuario = usuario?.nombre || "Cliente";
+
   return (
     <>
       <header className="cliente-navbar">
-        <button
-          className="cliente-navbar-toggle"
-          onClick={() => setMenuAbierto(!menuAbierto)}
-        >
-          ☰
-        </button>
-
         <Link to="/cliente" className="cliente-navbar-logo">
-          TicketBengoa
+          Ticket<span>Bengoa</span>
         </Link>
 
         <nav className="cliente-navbar-menu">
-          <Link to="/cliente">Inicio</Link>
-          <Link to="/cliente">Eventos</Link>
-          <Link to="/cliente/mis-boletos">Mis boletos</Link>
+          <Link to="/cliente" className="cliente-nav-link active">
+            <FiHome />
+            <span>Inicio</span>
+          </Link>
+
+          <Link to="/cliente" className="cliente-nav-link">
+            <FiCalendar />
+            <span>Eventos</span>
+          </Link>
+
+          <Link to="/cliente" className="cliente-nav-link">
+            <FiCreditCard />
+            <span>Mis boletos</span>
+          </Link>
         </nav>
 
         <div className="cliente-navbar-user">
-          <Link to="/cliente/perfil" className="cliente-profile-link">
-            Mi perfil
+          <Link to="/cliente" className="cliente-profile-box">
+            <span className="cliente-profile-avatar">{inicialUsuario}</span>
+
+            <span className="cliente-profile-text">
+              <FiUser />
+              {nombreUsuario}
+            </span>
           </Link>
 
-          <button onClick={handleLogout}>Salir</button>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="cliente-logout-btn"
+          >
+            <FiLogOut />
+            <span>Cerrar sesión</span>
+          </button>
         </div>
+
+        <button
+          type="button"
+          className="cliente-navbar-toggle"
+          onClick={() => setMenuAbierto(!menuAbierto)}
+        >
+          <FiMenu />
+        </button>
       </header>
 
       {menuAbierto && (
@@ -54,31 +95,44 @@ const ClienteNavbar = () => {
                 className="cliente-sidebar-logo"
                 onClick={cerrarMenu}
               >
-                TicketBengoa
+                Ticket<span>Bengoa</span>
               </Link>
 
-              <button onClick={cerrarMenu}>✕</button>
+              <button type="button" onClick={cerrarMenu}>
+                <FiX />
+              </button>
             </div>
 
             <nav className="cliente-sidebar-menu">
-              <Link to="/cliente" onClick={cerrarMenu}>
-                Inicio
+              <Link to="/cliente" onClick={cerrarMenu} className="active">
+                <FiHome />
+                <span>Inicio</span>
               </Link>
 
               <Link to="/cliente" onClick={cerrarMenu}>
-                Eventos
+                <FiCalendar />
+                <span>Eventos</span>
               </Link>
 
-              <Link to="/cliente/mis-boletos" onClick={cerrarMenu}>
-                Mis boletos
+              <Link to="/cliente" onClick={cerrarMenu}>
+                <FiCreditCard />
+                <span>Mis boletos</span>
               </Link>
-
-              <Link to="/cliente/perfil" onClick={cerrarMenu}>
-                Mi perfil
-              </Link>
-
-              <button onClick={handleLogout}>Cerrar sesión</button>
             </nav>
+
+            <div className="cliente-sidebar-user">
+              <div className="cliente-profile-avatar">{inicialUsuario}</div>
+              <strong>{nombreUsuario}</strong>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="cliente-sidebar-logout-btn"
+            >
+              <FiLogOut />
+              <span>Cerrar sesión</span>
+            </button>
           </aside>
         </>
       )}

@@ -133,7 +133,6 @@ const ClienteHome = () => {
       <main className="cliente-home">
         <section className="cliente-hero">
           <h1>Encuentra tu próximo concierto</h1>
-
           <p>Busca artistas, conciertos y eventos disponibles en TicketBengoa.</p>
 
           <div className="cliente-search-wrapper">
@@ -151,7 +150,7 @@ const ClienteHome = () => {
                 onKeyDown={manejarTeclas}
               />
 
-              <button onClick={buscarEvento}>Buscar</button>
+              
             </div>
 
             {mostrarSugerencias && sugerencias.length > 0 && (
@@ -200,8 +199,6 @@ const ClienteHome = () => {
                 </div>
 
                 <div className="cliente-destacado-content">
-                  <span className="cliente-badge">Disponible</span>
-
                   <h3>{eventoDestacado.nombre_concierto}</h3>
 
                   <p>
@@ -217,9 +214,7 @@ const ClienteHome = () => {
                   </p>
 
                   {eventoDestacado.descripcion && (
-                    <p className="cliente-desc">
-                      {eventoDestacado.descripcion}
-                    </p>
+                    <p className="cliente-desc">{eventoDestacado.descripcion}</p>
                   )}
 
                   <button
@@ -248,7 +243,15 @@ const ClienteHome = () => {
               <article className="cliente-evento-card" key={evento.id_concierto}>
                 <div className="cliente-evento-img">
                   {evento.imagen ? (
-                    <img src={evento.imagen} alt={evento.nombre_concierto} />
+                    <img
+                      src={evento.imagen}
+                      alt={evento.nombre_concierto}
+                      className={
+                        evento.nombre_artista?.toLowerCase().includes("ariana")
+                          ? "evento-img-ariana"
+                          : "evento-img-normal"
+                      }
+                    />
                   ) : (
                     <div className="cliente-img-placeholder">Sin imagen</div>
                   )}
