@@ -1,0 +1,786 @@
+/* ========================================
+   ARTISTAS ADMIN
+======================================== */
+
+.artistas-admin-page {
+  width: 100%;
+  min-height: 100vh;
+  color: #e5e7eb;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.artistas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 22px;
+  margin-bottom: 24px;
+}
+
+.artistas-eyebrow {
+  color: #a78bfa;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.artistas-header h1 {
+  margin: 8px 0 6px;
+  font-size: 38px;
+  font-weight: 900;
+  color: #f8fafc;
+  letter-spacing: -0.8px;
+}
+
+.artistas-header p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 15px;
+}
+
+.artistas-total-card {
+  min-width: 155px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  text-align: left;
+  display: grid;
+  gap: 4px;
+  position: relative;
+}
+
+.artistas-total-card span {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.artistas-total-card strong {
+  color: #a855f7;
+  font-size: 32px;
+  line-height: 1;
+}
+
+.artistas-total-card svg {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  color: #94a3b8;
+  font-size: 22px;
+}
+
+/* ========================================
+   TOOLBAR
+======================================== */
+
+.artistas-toolbar {
+  display: grid;
+  grid-template-columns: 1fr 270px;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.artistas-search-box,
+.artistas-filter-box {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.artistas-search-box svg,
+.artistas-filter-box svg {
+  color: #a78bfa;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.artistas-search-box input,
+.artistas-filter-box select {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #f8fafc;
+  font-size: 14px;
+}
+
+.artistas-search-box input::placeholder {
+  color: #64748b;
+}
+
+.artistas-filter-box select {
+  cursor: pointer;
+  appearance: none;
+}
+
+.artistas-filter-box option {
+  background: #111827;
+  color: #f8fafc;
+}
+
+/* ========================================
+   ALERTAS
+======================================== */
+
+.artistas-alert {
+  padding: 13px 16px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.artistas-alert.success {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.artistas-alert.error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* ========================================
+   LAYOUT
+======================================== */
+
+.artistas-content-grid {
+  display: grid;
+  grid-template-columns: minmax(430px, 32%) minmax(0, 1fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+.artistas-main-area {
+  display: contents;
+}
+
+.artistas-form-card {
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.artistas-table-card {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.artistas-actions-panel {
+  grid-column: 1 / -1;
+}
+
+/* ========================================
+   CARDS
+======================================== */
+
+.artistas-form-card,
+.artistas-table-card,
+.artistas-actions-panel {
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: 0 18px 45px rgba(2, 6, 23, 0.35);
+}
+
+.artistas-card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.artistas-card-title span {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #a855f7;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.9);
+}
+
+.artistas-card-title h2 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 19px;
+  font-weight: 900;
+}
+
+/* ========================================
+   FORMULARIO
+======================================== */
+
+.artistas-form-card label {
+  display: block;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.artistas-form-card input,
+.artistas-form-card textarea {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 15px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  outline: none;
+  background: rgba(2, 6, 23, 0.58);
+  color: #f8fafc;
+  font-size: 14px;
+  transition: 0.25s ease;
+}
+
+.artistas-form-card input::placeholder,
+.artistas-form-card textarea::placeholder {
+  color: #64748b;
+}
+
+.artistas-form-card textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.artistas-form-card input:focus,
+.artistas-form-card textarea:focus {
+  border-color: rgba(168, 85, 247, 0.75);
+  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.12);
+}
+
+.artistas-form-card small {
+  display: block;
+  margin-top: 6px;
+  text-align: right;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.artistas-form-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+/* ========================================
+   BOTONES FORM
+======================================== */
+
+.artistas-btn {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  cursor: pointer;
+  color: white;
+  font-weight: 900;
+  transition: 0.25s ease;
+}
+
+.artistas-btn.primary {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+}
+
+.artistas-btn.secondary {
+  background: rgba(148, 163, 184, 0.13);
+  color: #cbd5e1;
+}
+
+.artistas-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+/* ========================================
+   TABLA
+======================================== */
+
+.artistas-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 85, 247, 0.55) rgba(15, 23, 42, 0.7);
+}
+
+.artistas-table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.artistas-table-wrapper::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.75);
+  border-radius: 999px;
+}
+
+.artistas-table-wrapper::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #7c3aed, #a855f7);
+  border-radius: 999px;
+}
+
+.artistas-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #8b5cf6, #c084fc);
+}
+
+.artistas-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+
+.artistas-table th {
+  padding: 16px 14px;
+  text-align: left;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 900;
+  background: rgba(30, 41, 59, 0.65);
+  vertical-align: middle;
+}
+
+.artistas-table td {
+  padding: 16px 14px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  color: #cbd5e1;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.artistas-table th:nth-child(1),
+.artistas-table td:nth-child(1) {
+  width: 24%;
+}
+
+.artistas-table th:nth-child(2),
+.artistas-table td:nth-child(2) {
+  width: 18%;
+}
+
+.artistas-table th:nth-child(3),
+.artistas-table td:nth-child(3) {
+  width: 18%;
+  text-align: center;
+}
+
+.artistas-table th:nth-child(4),
+.artistas-table td:nth-child(4) {
+  width: 28%;
+  text-align: left;
+}
+
+.artistas-table th:nth-child(5),
+.artistas-table td:nth-child(5) {
+  width: 12%;
+  text-align: center;
+}
+
+.artista-row {
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.artista-row:hover td {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.artista-row.selected td {
+  background: rgba(139, 92, 246, 0.12);
+  border-bottom-color: rgba(168, 85, 247, 0.25);
+}
+
+.artista-row.selected td:first-child {
+  border-left: 3px solid #a855f7;
+}
+
+.artista-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.artista-iniciales {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: white;
+  font-weight: 900;
+  font-size: 13px;
+  box-shadow: 0 0 22px rgba(168, 85, 247, 0.25);
+}
+
+.artista-iniciales.large {
+  width: 54px;
+  height: 54px;
+  font-size: 16px;
+}
+
+.artistas-table td strong {
+  color: #f8fafc;
+  font-weight: 900;
+}
+
+.artistas-badge {
+  display: inline-flex;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.25;
+  max-width: 190px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.artistas-description {
+  max-width: 330px;
+  margin: 0;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artistas-row-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.artistas-icon-btn {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: #e5e7eb;
+  transition: 0.25s ease;
+}
+
+.artistas-icon-btn.edit {
+  background: rgba(139, 92, 246, 0.18);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  color: #c4b5fd;
+}
+
+.artistas-icon-btn.delete {
+  background: rgba(127, 29, 29, 0.45);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+.artistas-icon-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.artistas-empty {
+  text-align: center;
+  padding: 28px !important;
+  color: #94a3b8 !important;
+}
+
+/* ========================================
+   PANEL ACCIONES
+======================================== */
+
+.artistas-actions-panel {
+  display: grid;
+  grid-template-columns: 220px 1fr 1fr 1fr;
+  align-items: center;
+  gap: 14px;
+}
+
+.artistas-actions-panel .artistas-card-title {
+  margin-bottom: 0;
+}
+
+.artistas-selected-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(2, 6, 23, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.artistas-selected-info strong {
+  display: block;
+  color: #f8fafc;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.artistas-selected-info span {
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.artistas-action-option {
+  min-height: 76px;
+  border: none;
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(2, 6, 23, 0.28);
+  color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.artistas-action-option svg {
+  width: 42px;
+  height: 42px;
+  padding: 11px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.artistas-action-option.edit {
+  border: 1px solid rgba(168, 85, 247, 0.22);
+}
+
+.artistas-action-option.edit svg {
+  background: rgba(139, 92, 246, 0.18);
+  color: #c4b5fd;
+}
+
+.artistas-action-option.delete {
+  border: 1px solid rgba(239, 68, 68, 0.22);
+}
+
+.artistas-action-option.delete svg {
+  background: rgba(127, 29, 29, 0.55);
+  color: #fca5a5;
+}
+
+.artistas-action-option strong {
+  display: block;
+  font-size: 14px;
+}
+
+.artistas-action-option small {
+  display: block;
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.artistas-action-option:hover {
+  background: rgba(255, 255, 255, 0.045);
+  transform: translateY(-2px);
+}
+
+.artistas-no-selection {
+  grid-column: span 3;
+  margin: 0;
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ========================================
+   SCROLL TEXTAREA
+======================================== */
+
+.artistas-form-card textarea::-webkit-scrollbar {
+  width: 10px;
+}
+
+.artistas-form-card textarea::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.7);
+  border-radius: 999px;
+}
+
+.artistas-form-card textarea::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #7c3aed, #a855f7);
+  border-radius: 999px;
+  border: 2px solid rgba(15, 23, 42, 0.7);
+}
+
+.artistas-form-card textarea::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #8b5cf6, #c084fc);
+}
+
+.artistas-form-card textarea {
+  scrollbar-width: thin;
+  scrollbar-color: #8b5cf6 rgba(15, 23, 42, 0.7);
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1250px) {
+  .artistas-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .artistas-form-card,
+  .artistas-table-card,
+  .artistas-actions-panel {
+    grid-column: 1;
+  }
+
+  .artistas-main-area {
+    display: grid;
+    gap: 18px;
+  }
+
+  .artistas-actions-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .artistas-no-selection {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .artistas-header {
+    flex-direction: column;
+  }
+
+  .artistas-header h1 {
+    font-size: 30px;
+  }
+
+  .artistas-total-card {
+    width: 100%;
+  }
+
+  .artistas-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .artistas-form-card,
+  .artistas-table-card,
+  .artistas-actions-panel {
+    border-radius: 18px;
+    padding: 16px;
+  }
+
+  .artistas-table {
+    min-width: 850px;
+  }
+
+  .artistas-form-actions {
+    margin-top: 12px;
+  }
+
+  .artistas-selected-info {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .artistas-header h1 {
+    font-size: 25px;
+  }
+
+  .artistas-header p {
+    font-size: 14px;
+  }
+
+  .artistas-form-card input,
+  .artistas-form-card textarea {
+    font-size: 13px;
+  }
+
+  .artistas-action-option {
+    min-width: 100%;
+  }
+}
+
+/* ========================================
+   AJUSTES FINALES ARTISTAS
+======================================== */
+
+/* El scroll queda abajo de la tabla, no flotando tan arriba */
+.artistas-table-card {
+  justify-content: flex-start;
+}
+
+.artistas-table-wrapper {
+  margin-top: 0;
+  flex: 1;
+  max-height: none;
+}
+
+/* Iniciales más pequeñas en la tabla */
+.artista-iniciales {
+  width: 34px;
+  height: 34px;
+  font-size: 11px;
+}
+
+/* Inicial del panel de acciones puede quedar un poco más grande */
+.artista-iniciales.large {
+  width: 48px;
+  height: 48px;
+  font-size: 15px;
+}
+
+/* Panel de acciones más parejo hacia la izquierda */
+.artistas-actions-panel {
+  display: grid;
+
+  grid-template-columns:
+    150px
+    minmax(240px, 320px)
+    minmax(220px, 1fr)
+    minmax(220px, 1fr);
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+.artistas-actions-panel .artistas-card-title {
+    min-width: 0;
+    margin-bottom: 0;
+}
+
+.artistas-selected-info {
+  min-width: 0;
+}
+
+/* Responsive */
+@media (max-width: 1250px) {
+  .artistas-actions-panel {
+    grid-template-columns: 1fr;
+  }
+}
+

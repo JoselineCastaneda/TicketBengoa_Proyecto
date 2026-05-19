@@ -1,7 +1,30 @@
-import { useEffect, useState } from "react";
+import "../../styles/admin/AdminEventos.css";
+
+import { useEffect, useMemo, useState } from "react";
+import {
+  FiCalendar,
+  FiClock,
+  FiEdit2,
+  FiImage,
+  FiPlus,
+  FiSave,
+  FiSearch,
+  FiTrash2,
+  FiUpload,
+  FiX,
+} from "react-icons/fi";
+
 import { obtenerToken } from "../../auth/auth";
 
 const API_URL = "http://localhost:3000/api";
+
+const estadoOptions = [
+  { value: "borrador", label: "Borrador" },
+  { value: "activo", label: "Activo" },
+  { value: "cancelado", label: "Cancelado" },
+  { value: "finalizado", label: "Finalizado" },
+  { value: "pospuesto", label: "Pospuesto" },
+];
 
 const EventosAdmin = () => {
   const [eventos, setEventos] = useState([]);
@@ -30,6 +53,8 @@ const EventosAdmin = () => {
   const limpiarFormulario = () => {
     setIdEditando(null);
     setImagenActual("");
+    setMensaje("");
+    setError("");
 
     setForm({
       nombre_concierto: "",
@@ -55,7 +80,7 @@ const EventosAdmin = () => {
       if (data.ok) {
         setEventos(data.conciertos);
       }
-    } catch (error) {
+    } catch {
       setError("Error al cargar eventos");
     }
   };
@@ -73,7 +98,7 @@ const EventosAdmin = () => {
       if (data.ok) {
         setArtistas(data.artistas);
       }
-    } catch (error) {
+    } catch {
       setError("Error al cargar artistas");
     }
   };
@@ -87,24 +112,29 @@ const EventosAdmin = () => {
     const { name, value, files } = e.target;
 
     if (name === "imagen") {
-      setForm({
-        ...form,
-        imagen: files[0] || null,
-      });
+      setForm((prev) => ({
+        ...prev,
+        imagen: files?.[0] || null,
+      }));
       return;
     }
 
-    setForm({
-      ...form,
+    setForm((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const guardarEvento = async () => {
     setMensaje("");
     setError("");
 
-    if (!form.nombre_concierto || !form.id_artista || !form.fecha || !form.hora) {
+    if (
+      !form.nombre_concierto.trim() ||
+      !form.id_artista ||
+      !form.fecha ||
+      !form.hora
+    ) {
       setError("Nombre, artista, fecha y hora son obligatorios");
       return;
     }
@@ -152,7 +182,7 @@ const EventosAdmin = () => {
 
       limpiarFormulario();
       obtenerEventos();
-    } catch (error) {
+    } catch {
       setError("Error al guardar evento");
     }
   };
@@ -176,13 +206,13 @@ const EventosAdmin = () => {
 
     window.scrollTo({
       top: 0,
-      behavior: "smooth"
+      behavior: "smooth",
     });
-
   };
 
   const eliminarEvento = async (id) => {
     const confirmar = window.confirm("¿Seguro que deseas eliminar este evento?");
+
     if (!confirmar) return;
 
     setMensaje("");
@@ -205,7 +235,7 @@ const EventosAdmin = () => {
 
       setMensaje("Evento eliminado correctamente");
       obtenerEventos();
-    } catch (error) {
+    } catch {
       setError("Error al eliminar evento");
     }
   };
@@ -224,171 +254,273 @@ const EventosAdmin = () => {
     return coincideBusqueda && evento.estado === filtro;
   });
 
+  const imagenPreview = useMemo(() => {
+    if (form.imagen) {
+      return URL.createObjectURL(form.imagen);
+    }
+
+    return imagenActual;
+  }, [form.imagen, imagenActual]);
+
   return (
-    <div>
-      <h1 className="admin-page-title">Gestión de Eventos</h1>
+    <section className="eventos-admin-page">
+      <header className="eventos-header">
+        <div>
+          <span className="eventos-eyebrow">Administración</span>
+          <h1>Gestión de Eventos</h1>
+          <p>Crea, edita y administra los eventos disponibles en el sistema.</p>
+        </div>
 
-      <div className="admin-toolbar">
-        <input
-          type="text"
-          placeholder="Buscar evento por nombre, artista o estado..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          className="admin-search"
-        />
+        <div className="eventos-total-card">
+          <span>Total</span>
+          <strong>{eventosFiltrados.length}</strong>
+        </div>
+      </header>
 
-        <select
-          className="admin-filter"
-          value={filtro}
-          onChange={(e) => setFiltro(e.target.value)}
-        >
-          <option value="todos">Todos</option>
-          <option value="borrador">Borradores</option>
-          <option value="activo">Activos</option>
-          <option value="cancelado">Cancelados</option>
-          <option value="finalizado">Finalizados</option>
-          <option value="pospuesto">Pospuestos</option>
-        </select>
+      {mensaje && <p className="eventos-alert success">{mensaje}</p>}
+      {error && <p className="eventos-alert error">{error}</p>}
 
-        <span className="admin-count">Total: {eventosFiltrados.length}</span>
-      </div>
+      <section className="eventos-form-card">
+        <div className="eventos-card-title">
+          <span></span>
+          <h2>{idEditando ? "Editar evento" : "Crear nuevo evento"}</h2>
+        </div>
 
-      {mensaje && <p className="admin-success">{mensaje}</p>}
-      {error && <p className="admin-error">{error}</p>}
+        <div className="eventos-form-layout">
+          <div className="eventos-form-fields">
+            <label>
+              Nombre del evento
+              <input
+                type="text"
+                name="nombre_concierto"
+                placeholder="Ingrese el nombre del evento"
+                value={form.nombre_concierto}
+                onChange={handleChange}
+              />
+            </label>
 
-      <div className="form-artista">
-        <input
-          type="text"
-          name="nombre_concierto"
-          placeholder="Nombre del evento"
-          value={form.nombre_concierto}
-          onChange={handleChange}
-        />
+            <label>
+              Artista
+              <select
+                name="id_artista"
+                value={form.id_artista}
+                onChange={handleChange}
+              >
+                <option value="">Seleccione un artista</option>
 
-        <select
-          name="id_artista"
-          value={form.id_artista}
-          onChange={handleChange}
-        >
-          <option value="">Seleccione un artista</option>
+                {artistas.map((artista) => (
+                  <option key={artista.id_artista} value={artista.id_artista}>
+                    {artista.nombre_artista}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-          {artistas.map((artista) => (
-            <option key={artista.id_artista} value={artista.id_artista}>
-              {artista.nombre_artista}
-            </option>
-          ))}
-        </select>
+            <label>
+              Fecha
+              <input
+                type="date"
+                name="fecha"
+                value={form.fecha}
+                onChange={handleChange}
+              />
+            </label>
 
-        <input
-          type="date"
-          name="fecha"
-          value={form.fecha}
-          onChange={handleChange}
-        />
+            <label>
+              Hora
+              <input
+                type="time"
+                name="hora"
+                value={form.hora}
+                onChange={handleChange}
+              />
+            </label>
 
-        <input
-          type="time"
-          name="hora"
-          value={form.hora}
-          onChange={handleChange}
-        />
+            <label>
+              Estado
+              <select name="estado" value={form.estado} onChange={handleChange}>
+                {estadoOptions.map((estado) => (
+                  <option key={estado.value} value={estado.value}>
+                    {estado.label}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-        <input
-          type="file"
-          name="imagen"
-          accept="image/*"
-          onChange={handleChange}
-        />
+            <label className="eventos-description-field">
+              Descripción
+              <textarea
+                name="descripcion"
+                placeholder="Descripción del evento"
+                value={form.descripcion}
+                onChange={handleChange}
+              />
+            </label>
 
-        <select name="estado" value={form.estado} onChange={handleChange}>
-          <option value="borrador">Borrador</option>
-          <option value="activo">Activo</option>
-          <option value="cancelado">Cancelado</option>
-          <option value="finalizado">Finalizado</option>
-          <option value="pospuesto">Pospuesto</option>
-        </select>
+            <div className="eventos-form-actions">
 
-        <textarea
-          name="descripcion"
-          placeholder="Descripción del evento"
-          value={form.descripcion}
-          onChange={handleChange}
-        />
+              <button
+                type="button"
+                className="eventos-btn primary"
+                onClick={guardarEvento}
+              >
+                {idEditando ? <FiSave /> : <FiPlus />}
+                {idEditando ? "Actualizar evento" : "Crear evento"}
+              </button>
 
-        {(form.imagen || imagenActual) && (
-          <div className="poster-preview">
-            <img
-              src={form.imagen ? URL.createObjectURL(form.imagen) : imagenActual}
-              alt="Vista previa del poster"
-            />
+              <button
+                type="button"
+                className="eventos-btn clean"
+                onClick={limpiarFormulario}
+              >
+                <FiX />
+                {idEditando ? "Cancelar edición" : "Limpiar"}
+              </button>
+
+            </div>
           </div>
-        )}
 
-        <button onClick={guardarEvento}>
-          {idEditando ? "Actualizar Evento" : "Crear Evento"}
-        </button>
+          <aside className="eventos-poster-panel">
+            <div className="eventos-poster-title">
+              <FiImage />
+              <div>
+                <h3>Póster del evento</h3>
+                <p>Imagen recomendada: JPG, PNG o WEBP</p>
+              </div>
+            </div>
 
-        {idEditando && (
-          <button className="btn-cancelar" onClick={limpiarFormulario}>
-            Cancelar edición
-          </button>
-        )}
-      </div>
-
-      <div className="eventos-grid">
-        {eventosFiltrados.map((evento) => (
-          <div className="evento-card" key={evento.id_concierto}>
-            <div className="evento-img-box">
-              {evento.imagen ? (
-                <img src={evento.imagen} alt={evento.nombre_concierto} />
+            <div className="eventos-poster-preview">
+              {imagenPreview ? (
+                <img src={imagenPreview} alt="Vista previa del evento" />
               ) : (
-                <div className="evento-img-placeholder">Sin imagen</div>
+                <div className="eventos-poster-empty">
+                  <FiImage />
+                  <span>Sin imagen seleccionada</span>
+                </div>
               )}
             </div>
 
-            <div className="evento-card-body">
-              <span className={`estado-badge estado-${evento.estado}`}>
-                {evento.estado}
-              </span>
+            <label className="eventos-upload-btn">
+              <FiUpload />
+              {imagenPreview ? "Cambiar imagen" : "Subir imagen"}
+              <input
+                type="file"
+                name="imagen"
+                accept="image/*"
+                onChange={handleChange}
+              />
+            </label>
 
-              <h3>{evento.nombre_concierto}</h3>
+            <small className="eventos-file-name">
+              {form.imagen
+                ? form.imagen.name
+                : imagenActual
+                ? "Imagen actual del evento"
+                : "Ningún archivo seleccionado"}
+            </small>
+          </aside>
+        </div>
+      </section>
 
-              <p>
-                <strong>Artista:</strong> {evento.nombre_artista}
-              </p>
-
-              <p>
-                <strong>Fecha:</strong> {evento.fecha?.split("T")[0]}
-              </p>
-
-              <p>
-                <strong>Hora:</strong> {evento.hora}
-              </p>
-
-              <div className="acciones-tabla">
-                <button
-                  className="btn-editar"
-                  onClick={() => cargarEdicion(evento)}
-                >
-                  Editar
-                </button>
-
-                <button
-                  className="btn-eliminar"
-                  onClick={() => eliminarEvento(evento.id_concierto)}
-                >
-                  Eliminar
-                </button>
-              </div>
-            </div>
+      <section className="eventos-list-card">
+        <div className="eventos-list-header">
+          <div className="eventos-card-title">
+            <span></span>
+            <h2>Eventos registrados</h2>
           </div>
-        ))}
 
-        {eventosFiltrados.length === 0 && (
-          <div className="tabla-vacia">No hay eventos registrados.</div>
-        )}
-      </div>
-    </div>
+          <div className="eventos-toolbar">
+            <div className="eventos-search-box">
+              <FiSearch />
+              <input
+                type="text"
+                placeholder="Buscar por nombre, artista o estado..."
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+              />
+            </div>
+
+            <select
+              className="eventos-filter"
+              value={filtro}
+              onChange={(e) => setFiltro(e.target.value)}
+            >
+              <option value="todos">Todos los estados</option>
+              <option value="borrador">Borradores</option>
+              <option value="activo">Activos</option>
+              <option value="cancelado">Cancelados</option>
+              <option value="finalizado">Finalizados</option>
+              <option value="pospuesto">Pospuestos</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="eventos-grid">
+          {eventosFiltrados.map((evento) => (
+            <article className="evento-card" key={evento.id_concierto}>
+              <div className="evento-img-box">
+                {evento.imagen ? (
+                  <img src={evento.imagen} alt={evento.nombre_concierto} />
+                ) : (
+                  <div className="evento-img-placeholder">
+                    <FiImage />
+                    <span>Sin imagen</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="evento-card-body">
+                <span className={`estado-badge estado-${evento.estado}`}>
+                  {evento.estado}
+                </span>
+
+                <h3>{evento.nombre_concierto}</h3>
+
+                <p>
+                  <strong>Artista:</strong> {evento.nombre_artista}
+                </p>
+
+                <div className="evento-meta">
+                  <span>
+                    <FiCalendar />
+                    {evento.fecha?.split("T")[0]}
+                  </span>
+
+                  <span>
+                    <FiClock />
+                    {evento.hora}
+                  </span>
+                </div>
+
+                <div className="eventos-card-actions">
+                  <button
+                    type="button"
+                    className="eventos-action-btn edit"
+                    onClick={() => cargarEdicion(evento)}
+                  >
+                    <FiEdit2 />
+                    Editar
+                  </button>
+
+                  <button
+                    type="button"
+                    className="eventos-action-btn delete"
+                    onClick={() => eliminarEvento(evento.id_concierto)}
+                  >
+                    <FiTrash2 />
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            </article>
+          ))}
+
+          {eventosFiltrados.length === 0 && (
+            <div className="eventos-empty">No hay eventos registrados.</div>
+          )}
+        </div>
+      </section>
+    </section>
   );
 };
 

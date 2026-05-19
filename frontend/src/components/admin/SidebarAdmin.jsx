@@ -1,3 +1,5 @@
+import "../../styles/admin/sidebar.css";
+
 import {
   FiGrid,
   FiMic,
@@ -17,6 +19,31 @@ const SidebarAdmin = ({ setVista, vistaActiva }) => {
   const navigate = useNavigate();
   const usuario = obtenerUsuarioActivo();
 
+  const menuItems = [
+    { id: "dashboard", label: "Panel de Control", icon: <FiGrid /> },
+    { id: "artistas", label: "Artistas", icon: <FiMic /> },
+    { id: "eventos", label: "Eventos", icon: <FiCalendar /> },
+    { id: "zonas", label: "Zonas por Evento", icon: <FiMap /> },
+    { id: "ventas", label: "Historial de Ventas", icon: <FiDollarSign /> },
+    { id: "usuarios", label: "Gestión de Usuarios", icon: <FiUsers /> },
+    { id: "clientes", label: "Clientes", icon: <FiUser /> },
+    { id: "config", label: "Configuración", icon: <FiSettings /> },
+  ];
+
+  const nombreUsuario = usuario?.nombre
+    ? `${usuario.nombre} ${usuario.apellido || ""}`.trim()
+    : "Administrador";
+
+  const inicialUsuario = usuario?.nombre
+    ? usuario.nombre.charAt(0).toUpperCase()
+    : "A";
+
+  const rolUsuario = usuario?.rol || "Administrador";
+
+  const handleCambiarVista = (vista) => {
+    setVista(vista);
+  };
+
   const handleLogout = () => {
     cerrarSesion();
     navigate("/login");
@@ -24,113 +51,51 @@ const SidebarAdmin = ({ setVista, vistaActiva }) => {
 
   return (
     <aside className="sidebar-admin">
-      <div className="sidebar-logo">
-        <span className="sidebar-logo-mark">TB</span>
-        <span>TicketBengoa</span>
+      <div className="sidebar-brand">
+        <div className="sidebar-brand-glow" />
+
+        <div className="sidebar-brand-content">
+          <h2 className="sidebar-brand-title">
+            Ticket<span>Bengoa</span>
+          </h2>
+
+          <div className="sidebar-brand-divider" />
+
+          <p className="sidebar-brand-subtitle">Admin Panel</p>
+        </div>
       </div>
 
       <nav className="sidebar-menu">
-        <button
-          onClick={() => setVista("dashboard")}
-          className={`sidebar-item ${
-            vistaActiva === "dashboard" ? "active" : ""
-          }`}
-        >
-          <FiGrid />
-          <span>Panel de Control</span>
-        </button>
-
-        <button
-          onClick={() => setVista("artistas")}
-          className={`sidebar-item ${
-            vistaActiva === "artistas" ? "active" : ""
-          }`}
-        >
-          <FiMic />
-          <span>Artistas</span>
-        </button>
-
-        <button
-          onClick={() => setVista("eventos")}
-          className={`sidebar-item ${
-            vistaActiva === "eventos" ? "active" : ""
-          }`}
-        >
-          <FiCalendar />
-          <span>Eventos</span>
-        </button>
-
-        <button
-          onClick={() => setVista("zonas")}
-          className={`sidebar-item ${
-            vistaActiva === "zonas" ? "active" : ""
-          }`}
-        >
-          <FiMap />
-          <span>Zonas por Evento</span>
-        </button>
-
-        <button
-          onClick={() => setVista("ventas")}
-          className={`sidebar-item ${
-            vistaActiva === "ventas" ? "active" : ""
-          }`}
-        >
-          <FiDollarSign />
-          <span>Historial de Ventas</span>
-        </button>
-
-        <button
-          onClick={() => setVista("usuarios")}
-          className={`sidebar-item ${
-            vistaActiva === "usuarios" ? "active" : ""
-          }`}
-        >
-          <FiUsers />
-          <span>Gestión de Usuarios</span>
-        </button>
-
-        <button
-          onClick={() => setVista("clientes")}
-          className={`sidebar-item ${
-            vistaActiva === "clientes" ? "active" : ""
-          }`}
-        >
-          <FiUser />
-          <span>Clientes</span>
-        </button>
-
-        <button
-          onClick={() => setVista("config")}
-          className={`sidebar-item ${
-            vistaActiva === "config" ? "active" : ""
-          }`}
-        >
-          <FiSettings />
-          <span>Configuración</span>
-        </button>
+        {menuItems.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => handleCambiarVista(item.id)}
+            className={`sidebar-item ${
+              vistaActiva === item.id ? "active" : ""
+            }`}
+          >
+            {item.icon}
+            <span>{item.label}</span>
+          </button>
+        ))}
       </nav>
 
       <div className="sidebar-user-box">
         <div className="sidebar-user-top">
-          <div className="sidebar-user-avatar">
-            {usuario?.nombre
-              ? usuario.nombre.charAt(0).toUpperCase()
-              : "A"}
-          </div>
+          <div className="sidebar-user-avatar">{inicialUsuario}</div>
 
           <div className="sidebar-user-info">
-            <strong>
-              {usuario?.nombre
-                ? `${usuario.nombre} ${usuario.apellido || ""}`
-                : "Administrador"}
-            </strong>
-
-            <span>{usuario?.rol || "administrador"}</span>
+            <strong>{nombreUsuario}</strong>
+            <span>{rolUsuario}</span>
           </div>
         </div>
 
-        <button onClick={handleLogout} className="sidebar-logout-btn">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="sidebar-logout-btn"
+        >
           <FiLogOut />
           <span>Cerrar sesión</span>
         </button>

@@ -1,8 +1,80 @@
 import { useEffect, useState } from "react";
+import {
+  FiAlertTriangle,
+  FiCalendar,
+  FiCheckCircle,
+  FiGrid,
+  FiLock,
+  FiSave,
+  FiUsers,
+  FiX,
+} from "react-icons/fi";
+
+import {
+  MdWorkspacePremium,
+  MdDiamond,
+  MdTheaters,
+} from "react-icons/md";
+
+import {
+  HiMiniTicket,
+} from "react-icons/hi2";
+
+import {
+  FaCrown,
+} from "react-icons/fa6";
+
 import { obtenerToken } from "../../auth/auth";
 import "../../styles/admin/zonas.css";
 
 const API_URL = "http://localhost:3000/api";
+
+const zonaIconos = {
+  "Zona VIP": {
+    icon: FaCrown,
+    color: "purple",
+  },
+
+  "Zona Ejecutiva": {
+    icon: MdWorkspacePremium,
+    color: "blue",
+  },
+
+  "Zona Platinum": {
+    icon: MdDiamond,
+    color: "pink",
+  },
+
+  "Bloque A": {
+    icon: MdTheaters,
+    color: "orange",
+  },
+
+  "Bloque B": {
+    icon: MdTheaters,
+    color: "green",
+  },
+
+  "Bloque E": {
+    icon: HiMiniTicket,
+    color: "yellow",
+  },
+
+  "Bloque F": {
+    icon: HiMiniTicket,
+    color: "cyan",
+  },
+
+  "Zona General A": {
+    icon: FiUsers,
+    color: "cyan",
+  },
+
+  "Zona General B": {
+    icon: FiUsers,
+    color: "purple",
+  },
+};
 
 const ZonasAdmin = () => {
   const [eventos, setEventos] = useState([]);
@@ -23,9 +95,7 @@ const ZonasAdmin = () => {
   const obtenerEventos = async () => {
     try {
       const response = await fetch(`${API_URL}/conciertos`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       const data = await response.json();
@@ -33,7 +103,7 @@ const ZonasAdmin = () => {
       if (data.ok) {
         setEventos(data.conciertos);
       }
-    } catch (error) {
+    } catch {
       setError("Error al cargar eventos");
     }
   };
@@ -51,14 +121,9 @@ const ZonasAdmin = () => {
     setError("");
 
     try {
-      const response = await fetch(
-        `${API_URL}/zonas/concierto/${idConcierto}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_URL}/zonas/concierto/${idConcierto}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       const data = await response.json();
 
@@ -76,7 +141,7 @@ const ZonasAdmin = () => {
       setEventoInfo(data.evento);
       setZonas(data.zonas);
       setPreciosOriginales(originales);
-    } catch (error) {
+    } catch {
       setError("Error al cargar zonas del evento");
     } finally {
       setLoading(false);
@@ -104,9 +169,7 @@ const ZonasAdmin = () => {
 
     setZonas((prevZonas) =>
       prevZonas.map((zona) =>
-        zona.id_zona === idZona
-          ? { ...zona, precio_zona: nuevoPrecio }
-          : zona
+        zona.id_zona === idZona ? { ...zona, precio_zona: nuevoPrecio } : zona
       )
     );
   };
@@ -118,10 +181,7 @@ const ZonasAdmin = () => {
     setZonas((prevZonas) =>
       prevZonas.map((zona) =>
         zona.id_zona === idZona
-          ? {
-              ...zona,
-              precio_zona: preciosOriginales[idZona],
-            }
+          ? { ...zona, precio_zona: preciosOriginales[idZona] }
           : zona
       )
     );
@@ -169,7 +229,7 @@ const ZonasAdmin = () => {
 
       setMensaje(`Precio actualizado para ${zona.nombre_zona}`);
       obtenerZonas(eventoSeleccionado);
-    } catch (error) {
+    } catch {
       setError("Error al actualizar precio");
     } finally {
       setGuardandoId(null);
@@ -186,9 +246,7 @@ const ZonasAdmin = () => {
         `${API_URL}/zonas/inicializar/${eventoSeleccionado}`,
         {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
@@ -201,7 +259,7 @@ const ZonasAdmin = () => {
 
       setMensaje("Zonas y asientos creados correctamente");
       obtenerZonas(eventoSeleccionado);
-    } catch (error) {
+    } catch {
       setError("Error al inicializar zonas");
     } finally {
       setInicializando(false);
@@ -216,11 +274,18 @@ const ZonasAdmin = () => {
   );
 
   return (
-    <div>
-      <h1 className="admin-page-title">Zonas por Evento</h1>
+    <section className="zonas-admin-page">
+      <header className="zonas-page-header">
 
-      <div className="zonas-header-card">
         <div>
+          <span className="zonas-eyebrow">Administración</span>
+          <h1>Zonas por Evento</h1>
+          <p>Administra zonas, capacidades y precios por cada evento.</p>
+        </div>
+      </header>
+
+      <section className="zonas-selector-card">
+        <div className="zonas-selector-field">
           <label className="zonas-label">Seleccionar evento</label>
 
           <select
@@ -240,42 +305,47 @@ const ZonasAdmin = () => {
 
         {eventoInfo && (
           <div className="zonas-evento-info">
-            <p>
-              <strong>Evento:</strong> {eventoInfo.nombre_concierto}
-            </p>
+            <span>Evento:</span>
+            <strong>{eventoInfo.nombre_concierto}</strong>
 
             <span className={`estado-badge estado-${eventoInfo.estado}`}>
               {eventoInfo.estado}
             </span>
           </div>
         )}
-      </div>
+      </section>
 
       {mensaje && <p className="admin-success">{mensaje}</p>}
       {error && <p className="admin-error">{error}</p>}
 
       {eventoInfo && !puedeEditar && (
         <div className="zonas-warning">
-          Este evento ya no está en borrador. Los precios están bloqueados.
+          <FiAlertTriangle />
+          <span>Este evento ya no está en borrador. Los precios están bloqueados.</span>
         </div>
       )}
 
       {!eventoSeleccionado && (
         <div className="zonas-empty">
-          Selecciona un evento para administrar sus zonas y precios.
+          <FiCalendar />
+          <h3>Selecciona un evento</h3>
+          <p>Elige un evento para administrar sus zonas, asientos y precios.</p>
         </div>
       )}
 
-      {loading && <div className="zonas-empty">Cargando zonas...</div>}
+      {loading && (
+        <div className="zonas-empty">
+          <FiGrid />
+          <h3>Cargando zonas...</h3>
+          <p>Estamos obteniendo la información del evento seleccionado.</p>
+        </div>
+      )}
 
       {eventoSeleccionado && !loading && zonas.length === 0 && (
         <div className="zonas-empty">
+          <FiGrid />
           <h3>Este evento todavía no tiene zonas</h3>
-
-          <p>
-            Inicializa automáticamente las zonas, capacidades y asientos del
-            estadio.
-          </p>
+          <p>Inicializa automáticamente las zonas, capacidades y asientos del estadio.</p>
 
           <button
             className="zonas-init-btn"
@@ -290,93 +360,156 @@ const ZonasAdmin = () => {
       {zonas.length > 0 && (
         <>
           <div className="zonas-resumen">
-            <div className="zonas-resumen-card">
-              <small>Total zonas</small>
-              <strong>{zonas.length}</strong>
+            <div className="zonas-resumen-card purple">
+              <FiGrid />
+              <div>
+                <small>Total zonas</small>
+                <strong>{zonas.length}</strong>
+                <span>Zonas creadas</span>
+              </div>
             </div>
 
-            <div className="zonas-resumen-card">
-              <small>Total asientos</small>
-              <strong>{totalAsientos}</strong>
+            <div className="zonas-resumen-card blue">
+              <FiUsers />
+              <div>
+                <small>Total asientos</small>
+                <strong>{totalAsientos}</strong>
+                <span>Asientos totales</span>
+              </div>
             </div>
 
-            <div className="zonas-resumen-card">
-              <small>Evento</small>
-              <strong>{eventoInfo?.estado}</strong>
+            <div className="zonas-resumen-card green">
+              <FiCheckCircle />
+              <div>
+                <small>Estado del evento</small>
+                <strong>{eventoInfo?.estado}</strong>
+                <span>Estado actual</span>
+              </div>
             </div>
+
+            <div className="zonas-resumen-card pink">
+              <FiLock />
+              <div>
+                <small>Precios</small>
+                <strong>{puedeEditar ? "Editables" : "Bloqueados"}</strong>
+                <span>{puedeEditar ? "Puede editarse" : "No se pueden editar"}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="zonas-section-title">
+            <h2>Zonas configuradas</h2>
           </div>
 
           <div className="zonas-grid">
-            {zonas.map((zona) => (
-              <div className="zona-card" key={zona.id_zona}>
-                <div className="zona-card-header">
-                  <h3>{zona.nombre_zona}</h3>
-                  
-                </div>
+            {zonas.map((zona) => {
+              const meta = zonaIconos[zona.nombre_zona] || {
+                icon: FiGrid,
+                color: "purple",
+              };
 
-                <p className="zona-desc">{zona.descripcion_zona}</p>
+              const IconoZona = meta.icon;
 
-                <div className="zona-stats">
-                  <div>
-                    <small>Capacidad</small>
-                    <strong>{zona.capacidad_zona}</strong>
+              return (
+                <article className="zona-card" key={zona.id_zona}>
+                  <div className="zona-card-header">
+                    <div className={`zona-icon ${meta.color}`}>
+                      <IconoZona />
+                    </div>
+
+                    <div>
+                      <h3>{zona.nombre_zona}</h3>
+                      <p>{zona.descripcion_zona}</p>
+                    </div>
                   </div>
 
-                  <div>
-                    <small>Asientos registrados</small>
-                    <strong>{zona.total_asientos}</strong>
+                  <div className="zona-stats">
+                    <div>
+                      <small>Capacidad</small>
+                      <strong>{zona.capacidad_zona}</strong>
+                    </div>
+
+                    <div>
+                      <small>Asientos registrados</small>
+                      <strong>{zona.total_asientos}</strong>
+                    </div>
                   </div>
-                </div>
 
-                <label className="zonas-label">Precio de zona</label>
+                  <label className="zonas-label">Precio de zona</label>
 
-                <input
-                  className={`zona-precio-input ${
-                    Number(zona.precio_zona) === 0 ? "zona-precio-pendiente" : ""
-                  }`}
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={zona.precio_zona}
-                  disabled={!puedeEditar}
-                  onChange={(e) => cambiarPrecio(zona.id_zona, e.target.value)}
-                />
+                  <div className="zona-input-wrap">
+                    <input
+                      className={`zona-precio-input ${
+                        Number(zona.precio_zona) === 0
+                          ? "zona-precio-pendiente"
+                          : ""
+                      }`}
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={zona.precio_zona}
+                      disabled={!puedeEditar}
+                      onChange={(e) =>
+                        cambiarPrecio(zona.id_zona, e.target.value)
+                      }
+                    />
 
-                {Number(zona.precio_zona) === 0 && (
-                  <p className="zona-warning-price">
-                    Precio pendiente de configurar
-                  </p>
-                )}
+                    {!puedeEditar && <FiLock />}
+                  </div>
 
-                {tieneCambio(zona) && (
-                  <p className="zona-change-text">Tienes cambios sin guardar</p>
-                )}
+                  {Number(zona.precio_zona) === 0 && (
+                    <p className="zona-warning-price">
+                      Precio pendiente de configurar
+                    </p>
+                  )}
 
-                <div className="zona-actions">
-                  <button
-                    className="zona-save-btn"
-                    disabled={
-                      !puedeEditar || guardandoId === zona.id_zona || !tieneCambio(zona)
-                    }
-                    onClick={() => actualizarPrecioZona(zona)}
-                  >
-                    {guardandoId === zona.id_zona ? "Guardando..." : "Guardar"}
-                  </button>
+                  {tieneCambio(zona) && (
+                    <p className="zona-change-text">Tienes cambios sin guardar</p>
+                  )}
 
-                  <button
-                    className="zona-cancel-btn"
-                    disabled={!puedeEditar || !tieneCambio(zona)}
-                    onClick={() => cancelarCambioPrecio(zona.id_zona)}
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </div>
-            ))}
+                  <div className="zona-actions">
+                    <button
+                      className="zona-save-btn"
+                      disabled={
+                        !puedeEditar ||
+                        guardandoId === zona.id_zona ||
+                        !tieneCambio(zona)
+                      }
+                      onClick={() => actualizarPrecioZona(zona)}
+                    >
+                      <FiSave />
+                      {guardandoId === zona.id_zona ? "Guardando..." : "Guardar"}
+                    </button>
+
+                    <button
+                      className="zona-cancel-btn"
+                      disabled={!puedeEditar || !tieneCambio(zona)}
+                      onClick={() => cancelarCambioPrecio(zona.id_zona)}
+                    >
+                      <FiX />
+                      Cancelar
+                    </button>
+                  </div>
+
+                  {!puedeEditar && (
+                    <div className="zona-locked-text">
+                      <FiLock />
+                      Precio bloqueado
+                    </div>
+                  )}
+                </article>
+              );
+            })}
           </div>
+
+          <footer className="zonas-footer-note">
+            <span>
+              Los precios solo pueden editarse cuando el evento está en estado borrador.
+            </span>
+          </footer>
         </>
       )}
-    </div>
+    </section>
   );
 };
 

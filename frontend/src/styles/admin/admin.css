@@ -6,434 +6,68 @@
   display: flex;
   width: 100%;
   min-height: 100vh;
-  background: #f1f5f9;
+  background: #0f172a;
 }
 
 .admin-content {
   flex: 1;
   min-height: 100vh;
   padding: 30px;
-  background: #f1f5f9;
+  background:
+    linear-gradient(
+      180deg,
+      #0f172a 0%,
+      #111827 100%
+    );
+
   overflow-y: auto;
 }
 
 .admin-page-title {
   font-size: 30px;
   font-weight: 800;
-  color: #0f172a;
+  color: #f8fafc;
   margin-bottom: 24px;
 }
 
 /* ================================
-   SIDEBAR
-================================ */
-
-.sidebar-admin {
-  width: 270px;
-  height: 100vh;
-  position: sticky;
-  top: 0;
-  background: #020617;
-  padding: 22px 18px;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid rgba(148, 163, 184, 0.12);
-  overflow: hidden;
-}
-
-.sidebar-logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 22px;
-  font-weight: 800;
-  margin-bottom: 34px;
-  color: #ffffff;
-}
-
-.sidebar-logo-mark {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: #2563eb;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
-  font-weight: 800;
-}
-
-.sidebar-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-
-  overflow-y: auto;
-  padding-right: 4px;
-
-  scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.28) transparent;
-}
-
-.sidebar-menu::-webkit-scrollbar {
-  width: 6px;
-}
-
-.sidebar-menu::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.sidebar-menu::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.22);
-  border-radius: 999px;
-  transition: background 0.25s ease;
-}
-
-.sidebar-menu::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.42);
-}
-
-.sidebar-item {
-  width: 100%;
-  padding: 13px 14px;
-  border: none;
-  border-radius: 12px;
-  background: transparent;
-  color: #cbd5e1;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 15px;
-  cursor: pointer;
-  text-align: left;
-  transition: 0.2s ease;
-}
-
-.sidebar-item svg {
-  font-size: 19px;
-  flex-shrink: 0;
-}
-
-.sidebar-item:hover {
-  background: #1e293b;
-  color: #ffffff;
-  transform: translateX(3px);
-}
-
-.sidebar-item.active {
-  background: #2563eb;
-  color: #ffffff;
-}
-
-.logout-btn {
-  color: #fca5a5;
-}
-
-.logout-btn:hover {
-  background: #7f1d1d;
-  color: #ffffff;
-}
-
-.sidebar-user-box {
-  flex-shrink: 0;
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1px solid #1e293b;
-}
-
-.sidebar-user-top {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.sidebar-user-avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
-  background: #2563eb;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  flex-shrink: 0;
-}
-
-.sidebar-user-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar-user-info strong {
-  color: #ffffff;
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-
-.sidebar-user-info span {
-  color: #94a3b8;
-  font-size: 13px;
-  text-transform: capitalize;
-}
-
-.sidebar-logout-btn {
-  width: 100%;
-  border: none;
-  border-radius: 12px;
-  padding: 12px;
-  background: #7f1d1d;
-  color: #fecaca;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: 0.25s ease;
-}
-
-.sidebar-logout-btn:hover {
-  background: #dc2626;
-  color: #ffffff;
-}
-
-/* ================================
-   TOOLBAR
-================================ */
-
-.admin-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
-.admin-search {
-  width: 100%;
-  max-width: 520px;
-  padding: 13px 15px;
-  border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  outline: none;
-  font-size: 15px;
-  background: #ffffff;
-}
-
-.admin-filter {
-  padding: 13px 15px;
-  border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  outline: none;
-  font-size: 15px;
-  background: #ffffff;
-  min-width: 160px;
-}
-
-.admin-search:focus,
-.admin-filter:focus {
-  border-color: #2563eb;
-}
-
-.admin-count {
-  margin-left: auto;
-  background: #dbeafe;
-  color: #1d4ed8;
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-/* ================================
-   MENSAJES
+   MENSAJES GLOBALES
 ================================ */
 
 .admin-success {
-  background: #dcfce7;
-  color: #15803d;
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+
   padding: 12px 14px;
+
   border-radius: 12px;
+
   margin-bottom: 18px;
+
   font-size: 14px;
   font-weight: 600;
+
+  border: 1px solid rgba(34, 197, 94, 0.25);
 }
 
 .admin-error {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+
   padding: 12px 14px;
+
   border-radius: 12px;
+
   margin-bottom: 18px;
+
   font-size: 14px;
   font-weight: 600;
+
+  border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
 /* ================================
-   FORMULARIOS ADMIN
-================================ */
-
-.form-artista {
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-bottom: 28px;
-}
-
-.form-artista input,
-.form-artista select,
-.form-artista textarea {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  outline: none;
-  font-size: 15px;
-  background: #ffffff;
-  color: #0f172a;
-}
-
-.form-artista input:focus,
-.form-artista select:focus,
-.form-artista textarea:focus {
-  border-color: #2563eb;
-}
-
-.form-artista textarea {
-  grid-column: span 2;
-  min-height: 90px;
-  resize: vertical;
-}
-
-.form-artista input[type="file"] {
-  padding: 11px;
-  cursor: pointer;
-}
-
-.form-artista input[type="file"]::file-selector-button {
-  border: none;
-  background: #2563eb;
-  color: #ffffff;
-  padding: 9px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  margin-right: 12px;
-}
-
-.form-artista input[type="file"]::file-selector-button:hover {
-  background: #1d4ed8;
-}
-
-.form-artista button {
-  grid-column: span 2;
-  padding: 14px;
-  border: none;
-  border-radius: 12px;
-  background: #2563eb;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.form-artista button:hover {
-  background: #1d4ed8;
-}
-
-.btn-cancelar {
-  background: #64748b !important;
-}
-
-.btn-cancelar:hover {
-  background: #475569 !important;
-}
-
-/* ================================
-   PREVIEW POSTER
-================================ */
-
-.poster-preview {
-  grid-column: span 2;
-  background: #f8fafc;
-  border: 1px dashed #cbd5e1;
-  border-radius: 16px;
-  padding: 16px;
-  display: flex;
-  justify-content: center;
-}
-
-.poster-preview img {
-  width: 220px;
-  height: 280px;
-  border-radius: 16px;
-  object-fit: cover;
-  box-shadow: 0 12px 25px rgba(15, 23, 42, 0.18);
-}
-
-/* ================================
-   TABLA ARTISTAS
-================================ */
-
-.tabla-artistas {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-  overflow-x: auto;
-}
-
-.tabla-artistas table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.tabla-artistas th {
-  text-align: center;
-  padding: 16px 14px;
-  background: #0260da;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.tabla-artistas td {
-  padding: 14px;
-  border-bottom: 1px solid #e2e8f0;
-  color: #334155;
-  font-size: 14px;
-  vertical-align: top;
-  text-align: center;
-}
-
-.tabla-artistas tr:hover {
-  background: #f8fafc;
-}
-
-.tabla-vacia {
-  text-align: center;
-  color: #64748b;
-  padding: 20px;
-  background: #ffffff;
-  border-radius: 14px;
-}
-
-.descripcion-limitada {
-  max-width: 320px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ================================
-   CARDS EVENTOS
+   EVENTOS
 ================================ */
 
 .eventos-grid {
@@ -443,30 +77,41 @@
 }
 
 .evento-card {
-  background: #ffffff;
-  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.92);
+
+  border-radius: 22px;
+
   overflow: hidden;
+
   width: 100%;
   max-width: 340px;
-  border: 3px solid transparent;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  box-shadow:
+    0 18px 40px rgba(2, 6, 23, 0.35);
+
   transition:
-    transform 0.38s ease,
-    box-shadow 0.38s ease,
-    border-color 0.38s ease;
+    transform 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
 }
 
 .evento-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(147, 51, 234, 0.72);
+
+  border-color: rgba(168, 85, 247, 0.45);
+
   box-shadow:
-    0 18px 40px rgba(88, 28, 135, 0.22),
-    0 0 34px rgba(147, 51, 234, 0.28);
+    0 18px 40px rgba(88, 28, 135, 0.25),
+    0 0 34px rgba(147, 51, 234, 0.18);
 }
 
 .evento-img-box {
   height: 260px;
-  background: #e2e8f0;
+
+  background: #111827;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -475,16 +120,21 @@
 .evento-img-box img {
   width: 100%;
   height: 100%;
+
   object-fit: contain;
-  background: #0f172a;
+
+  background: #020617;
 }
 
 .evento-img-placeholder {
   height: 100%;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   color: #64748b;
+
   font-weight: 600;
 }
 
@@ -494,23 +144,36 @@
 
 .evento-card-body h3 {
   margin: 12px 0;
-  color: #0f172a;
+
+  color: #f8fafc;
+
   font-size: 20px;
 }
 
 .evento-card-body p {
-  color: #475569;
+  color: #94a3b8;
+
   font-size: 14px;
+
   margin-bottom: 7px;
 }
 
+/* ================================
+   ESTADOS
+================================ */
+
 .estado-badge {
   display: inline-block;
+
   padding: 6px 10px;
+
   border-radius: 999px;
+
   color: white;
+
   font-size: 12px;
   font-weight: 700;
+
   text-transform: capitalize;
 }
 
@@ -535,140 +198,127 @@
 }
 
 /* ================================
-   ACCIONES
+   RESPONSIVE ADMIN LAYOUT
 ================================ */
 
-.acciones-tabla {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.btn-editar,
-.btn-eliminar {
-  border: none;
-  padding: 9px 13px;
-  border-radius: 10px;
-  color: white;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.btn-editar {
-  background: #2563eb;
-}
-
-.btn-editar:hover {
-  background: #1d4ed8;
-}
-
-.btn-eliminar {
-  background: #dc2626;
-}
-
-.btn-eliminar:hover {
-  background: #b91c1c;
-}
-
-/* ================================
-   RESPONSIVE
-================================ */
-
-@media (max-width: 900px) {
-  .sidebar-admin {
-    width: 230px;
-  }
-
-  .admin-content {
-    padding: 22px;
-  }
-
-  .form-artista {
-    grid-template-columns: 1fr;
-  }
-
-  .form-artista textarea,
-  .form-artista button,
-  .poster-preview {
-    grid-column: span 1;
-  }
-
-  .admin-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .admin-search,
-  .admin-filter {
-    max-width: 100%;
-    width: 100%;
-  }
-
-  .admin-count {
-    margin-left: 0;
-  }
+.admin-menu-btn,
+.admin-sidebar-close,
+.admin-sidebar-overlay {
+  display: none;
 }
 
 @media (max-width: 768px) {
   .admin-layout {
-    flex-direction: column;
-  }
-
-  .sidebar-admin {
-    width: 100%;
-    min-height: auto;
-    padding: 16px;
-  }
-
-  .sidebar-logo {
-    margin-bottom: 18px;
-  }
-
-  .sidebar-menu {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-
-  .sidebar-item {
-    padding: 11px;
-    font-size: 13px;
-  }
-
-  .sidebar-item svg {
-    font-size: 16px;
-  }
-
-  .logout-btn {
-    margin-top: 8px;
+    display: block;
   }
 
   .admin-content {
     width: 100%;
-    padding: 18px;
+    min-height: 100vh;
+
+    padding:
+      80px
+      18px
+      20px;
   }
 
   .admin-page-title {
     font-size: 26px;
   }
 
-  .poster-preview img {
-    width: 190px;
-    height: 240px;
+  /* MENU BUTTON */
+
+  .admin-menu-btn {
+    display: flex;
+
+    position: fixed;
+
+    top: 16px;
+    left: 16px;
+
+    z-index: 997;
+
+    width: 46px;
+    height: 46px;
+
+    border: none;
+    border-radius: 16px;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+      linear-gradient(
+        135deg,
+        #ec4899,
+        #8b5cf6,
+        #3b82f6
+      );
+
+    color: white;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    box-shadow:
+      0 0 24px rgba(168, 85, 247, 0.35);
   }
 
-  .tabla-artistas {
-    padding: 12px;
+  /* OVERLAY */
+
+  .admin-sidebar-overlay.active {
+    display: block;
+
+    position: fixed;
+    inset: 0;
+
+    z-index: 998;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    backdrop-filter: blur(5px);
   }
 
-  .tabla-artistas table {
-    min-width: 680px;
+  /* SIDEBAR WRAPPER */
+
+  .admin-sidebar-wrapper {
+    position: fixed;
+
+    top: 0;
+    left: -100%;
+
+    z-index: 999;
+
+    transition: left 0.35s ease;
   }
+
+  .admin-sidebar-wrapper.active {
+    left: 0;
+  }
+
+  .admin-sidebar-wrapper .sidebar-admin {
+    position: relative;
+    left: 0;
+  }
+
+  /* CLOSE BUTTON */
+
+.admin-sidebar-close {
+  display: none;
+}
 
   .eventos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns:
+      repeat(
+        auto-fill,
+        minmax(320px, 1fr)
+      );
+
     gap: 22px;
   }
+}
+
+.admin-sidebar-close {
+  display: none !important;
 }
