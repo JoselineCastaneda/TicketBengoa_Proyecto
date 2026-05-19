@@ -1,0 +1,246 @@
+.estadiob-root {
+  width: 100%;
+  min-width: 0;
+}
+
+.estadiob-wrapper {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+/* VIEWPORT */
+
+.estadiob-viewport {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+
+  background:
+    radial-gradient(circle at 12% 18%, rgba(59, 130, 246, 0.35), transparent 28%),
+    radial-gradient(circle at 88% 35%, rgba(168, 85, 247, 0.32), transparent 34%),
+    radial-gradient(circle at 50% 100%, rgba(37, 99, 235, 0.22), transparent 45%),
+    linear-gradient(135deg, #020617 0%, #071225 42%, #111827 100%);
+
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  border-radius: 20px;
+
+  box-sizing: border-box;
+  cursor: grab;
+
+  user-select: none;
+  -webkit-user-select: none;
+
+  isolation: isolate;
+
+  box-shadow:
+    inset 0 0 40px rgba(37, 99, 235, 0.1),
+    0 0 40px rgba(168, 85, 247, 0.1);
+}
+
+.estadiob-viewport:active {
+  cursor: grabbing;
+}
+
+/* EFECTOS */
+
+.estadiob-viewport::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.9) 1px, transparent 1.8px),
+    radial-gradient(circle, rgba(96, 165, 250, 0.75) 1px, transparent 1.8px),
+    radial-gradient(circle, rgba(168, 85, 247, 0.65) 1px, transparent 1.8px);
+
+  background-size:
+    140px 140px,
+    210px 210px,
+    280px 280px;
+
+  background-position:
+    20px 30px,
+    80px 100px,
+    140px 60px;
+
+  opacity: 0.22;
+}
+
+.estadiob-viewport::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      115deg,
+      transparent 0%,
+      rgba(59, 130, 246, 0.1) 28%,
+      transparent 45%,
+      rgba(168, 85, 247, 0.12) 68%,
+      transparent 100%
+    );
+
+  opacity: 0.8;
+}
+
+/* SVG */
+
+.estadiob-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+
+  transform-origin: top left;
+  backface-visibility: hidden;
+}
+
+.estadiob-svg {
+  display: block;
+
+  width: 900px;
+  height: 620px;
+
+  border: 0;
+
+  pointer-events: auto;
+
+  image-rendering: auto;
+}
+
+/* CONTROLES */
+
+.estadiob-controls {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+
+  z-index: 20;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  background: rgba(15, 23, 42, 0.82);
+
+  padding: 10px;
+
+  border: 1px solid rgba(96, 165, 250, 0.28);
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 0 18px rgba(37, 99, 235, 0.25),
+    0 6px 18px rgba(0, 0, 0, 0.35);
+
+  backdrop-filter: blur(10px);
+}
+
+.estadiob-controls button {
+  width: 44px;
+  height: 44px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #0f172a;
+
+  color: #ffffff;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.25s ease;
+
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.25);
+}
+
+.estadiob-controls button:hover {
+  background: #1e293b;
+
+  transform: translateY(-1px);
+
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.45);
+}
+
+.estadiob-controls button:disabled {
+  background: #64748b;
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
+/* TOOLTIP */
+
+.estadiob-tooltip {
+  position: fixed;
+  z-index: 9999;
+
+  pointer-events: none;
+
+  background: rgba(2, 6, 23, 0.95);
+
+  color: #ffffff;
+
+  border: 1px solid rgba(168, 85, 247, 0.35);
+
+  border-radius: 10px;
+
+  padding: 8px 12px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .estadiob-viewport {
+    height: 500px;
+  }
+}
+
+@media (max-width: 700px) {
+  .estadiob-viewport {
+    height: 430px;
+    border-radius: 16px;
+  }
+
+  .estadiob-controls {
+    top: 12px;
+    right: 12px;
+  }
+
+  .estadiob-controls button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 430px) {
+  .estadiob-viewport {
+    height: 360px;
+  }
+
+  .estadiob-controls {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .estadiob-controls button {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+}

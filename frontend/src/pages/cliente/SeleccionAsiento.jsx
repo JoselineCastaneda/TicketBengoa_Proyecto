@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { obtenerToken } from "../../auth/auth";
+
 import ClienteNavbar from "../../components/cliente/ClienteNavbar";
+import Estadio from "../../components/cliente/Estadio";
+import { obtenerToken } from "../../auth/auth";
 
 import "../../styles/cliente/seleccionAsientos.css";
 
@@ -13,12 +15,16 @@ const SeleccionAsiento = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const estadioBoxRef = useRef(null);
+  const contadorRef = useRef(null);
+
   const [evento, setEvento] = useState(null);
   const [zonas, setZonas] = useState([]);
   const [asientos, setAsientos] = useState([]);
   const [zonaSeleccionada, setZonaSeleccionada] = useState(null);
-  const [asientosSeleccionados, setAsientosSeleccionados] = useState([]);
+  const [enfoqueZona, setEnfoqueZona] = useState(0);
 
+  const [asientosSeleccionados, setAsientosSeleccionados] = useState([]);
   const [reserva, setReserva] = useState(null);
   const [segundosRestantes, setSegundosRestantes] = useState(0);
 
@@ -28,6 +34,49 @@ const SeleccionAsiento = () => {
   const [error, setError] = useState("");
 
   const token = obtenerToken();
+  const reservaStorageKey = `reserva_activa_evento_${id}`;
+
+  const guardarReservaLocal = (reservaActiva, asientosReserva) => {
+    localStorage.setItem(
+      reservaStorageKey,
+      JSON.stringify({
+        reserva: reservaActiva,
+        asientos: asientosReserva,
+      })
+    );
+  };
+
+  const limpiarReservaLocal = () => {
+    localStorage.removeItem(reservaStorageKey);
+  };
+
+  const cargarReservaLocal = () => {
+    const data = localStorage.getItem(reservaStorageKey);
+    if (!data) return null;
+
+    try {
+      const reservaGuardada = JSON.parse(data);
+
+      if (!reservaGuardada?.reserva?.fecha_expiracion) {
+        limpiarReservaLocal();
+        return null;
+      }
+
+      const expiracion = new Date(
+        reservaGuardada.reserva.fecha_expiracion
+      ).getTime();
+
+      if (expiracion <= Date.now()) {
+        limpiarReservaLocal();
+        return null;
+      }
+
+      return reservaGuardada;
+    } catch {
+      limpiarReservaLocal();
+      return null;
+    }
+  };
 
   const cargarAsientos = async () => {
     try {
@@ -48,11 +97,26 @@ const SeleccionAsiento = () => {
       setZonas(data.zonas);
       setAsientos(data.asientos);
 
-      if (!zonaSeleccionada && data.zonas.length > 0) {
-        setZonaSeleccionada(data.zonas[0]);
+      setZonaSeleccionada((zonaActual) => {
+        if (zonaActual) {
+          const mismaZona = data.zonas.find(
+            (zona) => zona.id_zona === zonaActual.id_zona
+          );
+
+          return mismaZona || zonaActual;
+        }
+
+        return data.zonas.length > 0 ? data.zonas[0] : null;
+      });
+
+      const reservaGuardada = cargarReservaLocal();
+
+      if (reservaGuardada && !reserva) {
+        setReserva(reservaGuardada.reserva);
+        setAsientosSeleccionados(reservaGuardada.asientos || []);
       }
-    } catch (error) {
-      setError("Error de conexión al cargar asientos");
+    } catch (err) {
+      setError("Error de conexión");
     } finally {
       setLoading(false);
     }
@@ -71,9 +135,10 @@ const SeleccionAsiento = () => {
   useEffect(() => {
     if (!reserva?.fecha_expiracion) return;
 
-    const actualizarContador = () => {
+    const actualizarTiempo = () => {
       const ahora = new Date().getTime();
       const expiracion = new Date(reserva.fecha_expiracion).getTime();
+
       const diferencia = Math.max(Math.floor((expiracion - ahora) / 1000), 0);
 
       setSegundosRestantes(diferencia);
@@ -81,13 +146,14 @@ const SeleccionAsiento = () => {
       if (diferencia === 0) {
         setReserva(null);
         setAsientosSeleccionados([]);
+        limpiarReservaLocal();
         cargarAsientos();
       }
     };
 
-    actualizarContador();
+    actualizarTiempo();
 
-    const intervalo = setInterval(actualizarContador, 1000);
+    const intervalo = setInterval(actualizarTiempo, 1000);
 
     return () => clearInterval(intervalo);
   }, [reserva]);
@@ -105,32 +171,32 @@ const SeleccionAsiento = () => {
     0
   );
 
-  const formatearTiempo = (segundos) => {
-    const min = Math.floor(segundos / 60);
-    const seg = segundos % 60;
-
-    return `${String(min).padStart(2, "0")}:${String(seg).padStart(2, "0")}`;
-  };
-
   const seleccionarZona = (zona) => {
-    if (reserva) return;
-
     setZonaSeleccionada(zona);
-    setAsientosSeleccionados([]);
-    setMensaje("");
-    setError("");
+
+    if (!reserva) {
+      setAsientosSeleccionados([]);
+    }
+
+    setTimeout(() => {
+      setEnfoqueZona((prev) => prev + 1);
+
+      estadioBoxRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 80);
   };
 
   const seleccionarAsiento = (asiento) => {
     if (reserva) return;
-
     if (asiento.estado_asiento !== "disponible") return;
 
-    const yaSeleccionado = asientosSeleccionados.some(
+    const existe = asientosSeleccionados.some(
       (item) => item.id_asiento === asiento.id_asiento
     );
 
-    if (yaSeleccionado) {
+    if (existe) {
       setAsientosSeleccionados((prev) =>
         prev.filter((item) => item.id_asiento !== asiento.id_asiento)
       );
@@ -138,7 +204,7 @@ const SeleccionAsiento = () => {
     }
 
     if (asientosSeleccionados.length >= MAX_ASIENTOS) {
-      setError(`Solo puedes seleccionar máximo ${MAX_ASIENTOS} asientos`);
+      setError(`Máximo ${MAX_ASIENTOS} asientos`);
       return;
     }
 
@@ -147,11 +213,10 @@ const SeleccionAsiento = () => {
   };
 
   const crearReserva = async () => {
-    setReservando(true);
-    setMensaje("");
-    setError("");
-
     try {
+      setReservando(true);
+      setError("");
+
       const response = await fetch(`${API_URL}/cliente/reservas`, {
         method: "POST",
         headers: {
@@ -160,22 +225,39 @@ const SeleccionAsiento = () => {
         },
         body: JSON.stringify({
           id_concierto: Number(id),
-          asientos: asientosSeleccionados.map((asiento) => asiento.id_asiento),
+          asientos: asientosSeleccionados.map((a) => a.id_asiento),
         }),
       });
 
       const data = await response.json();
 
       if (!data.ok) {
-        setError(data.mensaje || "Error al crear reserva");
+        const reservaGuardada = cargarReservaLocal();
+
+        if (reservaGuardada) {
+          setReserva(reservaGuardada.reserva);
+          setAsientosSeleccionados(reservaGuardada.asientos || []);
+        }
+
+        setError(data.mensaje || "Error al reservar");
         return;
       }
 
       setReserva(data.reserva);
+      guardarReservaLocal(data.reserva, asientosSeleccionados);
+
       setMensaje("Reserva creada correctamente. Tienes 10 minutos para pagar.");
+
+      setTimeout(() => {
+        contadorRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 150);
+
       cargarAsientos();
-    } catch (error) {
-      setError("Error de conexión al crear reserva");
+    } catch (err) {
+      setError("Error de conexión");
     } finally {
       setReservando(false);
     }
@@ -183,9 +265,6 @@ const SeleccionAsiento = () => {
 
   const cancelarReserva = async () => {
     if (!reserva) return;
-
-    setMensaje("");
-    setError("");
 
     try {
       const response = await fetch(
@@ -201,16 +280,16 @@ const SeleccionAsiento = () => {
       const data = await response.json();
 
       if (!data.ok) {
-        setError(data.mensaje || "Error al cancelar reserva");
+        setError(data.mensaje || "Error al cancelar");
         return;
       }
 
       setReserva(null);
       setAsientosSeleccionados([]);
-      setMensaje("Reserva cancelada correctamente");
+      limpiarReservaLocal();
       cargarAsientos();
-    } catch (error) {
-      setError("Error de conexión al cancelar reserva");
+    } catch (err) {
+      setError("Error de conexión");
     }
   };
 
@@ -227,14 +306,11 @@ const SeleccionAsiento = () => {
     });
   };
 
-  const obtenerClaseAsiento = (asiento) => {
-    const seleccionado = asientosSeleccionados.some(
-      (item) => item.id_asiento === asiento.id_asiento
-    );
+  const formatearTiempo = (segundos) => {
+    const min = Math.floor(segundos / 60);
+    const sec = segundos % 60;
 
-    if (seleccionado) return "asiento asiento-seleccionado";
-
-    return `asiento asiento-${asiento.estado_asiento}`;
+    return `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
   };
 
   if (loading) {
@@ -244,7 +320,6 @@ const SeleccionAsiento = () => {
         <main className="seleccion-page">
           <div className="seleccion-message">Cargando asientos...</div>
         </main>
-        
       </>
     );
   }
@@ -267,7 +342,7 @@ const SeleccionAsiento = () => {
           </div>
 
           {reserva && (
-            <div className="contador-reserva">
+            <div ref={contadorRef} className="contador-reserva">
               <span>Tiempo para pagar</span>
               <strong>{formatearTiempo(segundosRestantes)}</strong>
             </div>
@@ -289,7 +364,6 @@ const SeleccionAsiento = () => {
                       : "zona-tab"
                   }
                   onClick={() => seleccionarZona(zona)}
-                  disabled={!!reserva}
                 >
                   {zona.nombre_zona}
                   <span>${Number(zona.precio_zona).toFixed(2)}</span>
@@ -297,32 +371,39 @@ const SeleccionAsiento = () => {
               ))}
             </div>
 
-            <div className="leyenda-asientos">
-              <span><b className="color disponible"></b>Disponible</span>
-              <span><b className="color reservado"></b>Reservado</span>
-              <span><b className="color vendido"></b>Vendido</span>
-              <span><b className="color seleccionado"></b>Seleccionado</span>
-              <span><b className="color inhabilitado"></b>Inhabilitado</span>
+            <div ref={estadioBoxRef} className="estadio-box estadio-box-svg">
+              <Estadio
+                asientos={asientos}
+                asientosZona={asientosZona}
+                zonaSeleccionada={zonaSeleccionada}
+                enfoqueZona={enfoqueZona}
+                asientosSeleccionados={asientosSeleccionados}
+                reservaActiva={!!reserva}
+                maxSeleccion={MAX_ASIENTOS}
+                onSeleccionarAsiento={seleccionarAsiento}
+              />
             </div>
 
-            <div className="estadio-box">
-              <div className="escenario">Escenario / Campo</div>
+            <div className="leyenda-asientos">
+              <span>
+                <b className="color disponible"></b>
+                Disponible
+              </span>
 
-              <div className="asientos-grid">
-                {asientosZona.map((asiento) => (
-                  <button
-                    key={asiento.id_asiento}
-                    className={obtenerClaseAsiento(asiento)}
-                    onClick={() => seleccionarAsiento(asiento)}
-                    disabled={
-                      asiento.estado_asiento !== "disponible" || !!reserva
-                    }
-                    title={`${asiento.codigo_svg} - ${asiento.estado_asiento}`}
-                  >
-                    {asiento.numero_asiento}
-                  </button>
-                ))}
-              </div>
+              <span>
+                <b className="color reservado"></b>
+                Reservado
+              </span>
+
+              <span>
+                <b className="color vendido"></b>
+                Vendido
+              </span>
+
+              <span>
+                <b className="color seleccionado"></b>
+                Seleccionado
+              </span>
             </div>
           </div>
 
@@ -336,7 +417,9 @@ const SeleccionAsiento = () => {
 
               <p>
                 <strong>Zona:</strong>{" "}
-                {zonaSeleccionada ? zonaSeleccionada.nombre_zona : "No seleccionada"}
+                {zonaSeleccionada
+                  ? zonaSeleccionada.nombre_zona
+                  : "No seleccionada"}
               </p>
 
               <p>
@@ -380,20 +463,21 @@ const SeleccionAsiento = () => {
                   Pagar ahora
                 </button>
 
-                <button className="btn-cancelar-reserva" onClick={cancelarReserva}>
+                <button
+                  className="btn-cancelar-reserva"
+                  onClick={cancelarReserva}
+                >
                   Cancelar reserva
                 </button>
               </>
             )}
 
             <p className="resumen-nota">
-              Los asientos seleccionados se reservarán durante 10 minutos.
+              Tus asientos se reservarán durante 10 minutos
             </p>
           </aside>
         </section>
       </main>
-
-      
     </>
   );
 };
