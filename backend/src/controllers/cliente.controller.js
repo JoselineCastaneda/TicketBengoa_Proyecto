@@ -13,26 +13,19 @@ const liberarReservasVencidas = async (client, id_concierto) => {
   )
 
   for (const reserva of reservasVencidas.rows) {
-    const detalles = await client.query(
+    await client.query(
       `
-      SELECT id_asiento
-      FROM detalle_reservas
-      WHERE id_reserva = $1
+      UPDATE asientos
+      SET estado_asiento = 'disponible'
+      WHERE id_asiento IN (
+        SELECT id_asiento
+        FROM detalle_reservas
+        WHERE id_reserva = $1
+      )
+      AND estado_asiento = 'reservado'
       `,
       [reserva.id_reserva]
     )
-
-    for (const detalle of detalles.rows) {
-      await client.query(
-        `
-        UPDATE asientos
-        SET estado_asiento = 'disponible'
-        WHERE id_asiento = $1
-          AND estado_asiento = 'reservado'
-        `,
-        [detalle.id_asiento]
-      )
-    }
 
     await client.query(
       `
@@ -309,7 +302,8 @@ const crearReserva = async (req, res) => {
       await client.query('ROLLBACK')
       return res.status(400).json({
         ok: false,
-        mensaje: 'Ya tienes una reserva activa para este evento. Cancélala o finaliza el pago antes de crear otra.'
+        mensaje:
+          'Ya tienes una reserva activa para este evento. Cancélala o finaliza el pago antes de crear otra.'
       })
     }
 
@@ -360,7 +354,7 @@ const crearReserva = async (req, res) => {
     }
 
     const asientoFueraEvento = asientosResult.rows.some(
-      asiento => Number(asiento.id_concierto) !== Number(id_concierto)
+      (asiento) => Number(asiento.id_concierto) !== Number(id_concierto)
     )
 
     if (asientoFueraEvento) {
@@ -372,7 +366,7 @@ const crearReserva = async (req, res) => {
     }
 
     const ocupados = asientosResult.rows.some(
-      asiento => asiento.estado_asiento !== 'disponible'
+      (asiento) => asiento.estado_asiento !== 'disponible'
     )
 
     if (ocupados) {
@@ -484,26 +478,19 @@ const cancelarReserva = async (req, res) => {
       })
     }
 
-    const detallesResult = await client.query(
+    await client.query(
       `
-      SELECT id_asiento
-      FROM detalle_reservas
-      WHERE id_reserva = $1
+      UPDATE asientos
+      SET estado_asiento = 'disponible'
+      WHERE id_asiento IN (
+        SELECT id_asiento
+        FROM detalle_reservas
+        WHERE id_reserva = $1
+      )
+      AND estado_asiento = 'reservado'
       `,
       [id]
     )
-
-    for (const detalle of detallesResult.rows) {
-      await client.query(
-        `
-        UPDATE asientos
-        SET estado_asiento = 'disponible'
-        WHERE id_asiento = $1
-          AND estado_asiento = 'reservado'
-        `,
-        [detalle.id_asiento]
-      )
-    }
 
     await client.query(
       `
@@ -534,10 +521,252 @@ const cancelarReserva = async (req, res) => {
   }
 }
 
+const confirmarPago = async (req, res) => {
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    const id_usuario = req.usuario.id_usuario
+    const { id_reserva, id_metodo_pago } = req.body
+
+    if (!id_reserva || !id_metodo_pago) {
+      await client.query('ROLLBACK')
+      return res.status(400).json({
+        ok: false,
+        mensaje: 'Reserva y método de pago son obligatorios'
+      })
+    }
+
+    const reservaResult = await client.query(
+      `
+      SELECT
+        id_reserva,
+        id_usuario,
+        id_concierto,
+        fecha_expiracion,
+        estado_reserva
+      FROM reservas
+      WHERE id_reserva = $1
+        AND id_usuario = $2
+      FOR UPDATE
+      `,
+      [id_reserva, id_usuario]
+    )
+
+    if (reservaResult.rows.length === 0) {
+      await client.query('ROLLBACK')
+      return res.status(404).json({
+        ok: false,
+        mensaje: 'Reserva no encontrada'
+      })
+    }
+
+    const reserva = reservaResult.rows[0]
+
+    if (reserva.estado_reserva !== 'activa') {
+      await client.query('ROLLBACK')
+      return res.status(400).json({
+        ok: false,
+        mensaje: 'La reserva ya no está activa'
+      })
+    }
+
+    if (new Date(reserva.fecha_expiracion).getTime() <= Date.now()) {
+      await client.query(
+        `
+        UPDATE reservas
+        SET estado_reserva = 'vencida'
+        WHERE id_reserva = $1
+        `,
+        [id_reserva]
+      )
+
+      await client.query(
+        `
+        UPDATE asientos
+        SET estado_asiento = 'disponible'
+        WHERE id_asiento IN (
+          SELECT id_asiento
+          FROM detalle_reservas
+          WHERE id_reserva = $1
+        )
+        AND estado_asiento = 'reservado'
+        `,
+        [id_reserva]
+      )
+
+      await client.query('COMMIT')
+
+      return res.status(400).json({
+        ok: false,
+        mensaje: 'La reserva venció. Debes seleccionar los asientos nuevamente.'
+      })
+    }
+
+    const metodoResult = await client.query(
+      `
+      SELECT id_metodo_pago
+      FROM metodos_pagos
+      WHERE id_metodo_pago = $1
+      `,
+      [id_metodo_pago]
+    )
+
+    if (metodoResult.rows.length === 0) {
+      await client.query('ROLLBACK')
+      return res.status(400).json({
+        ok: false,
+        mensaje: 'Método de pago inválido'
+      })
+    }
+
+    const totalResult = await client.query(
+      `
+      SELECT COALESCE(SUM(z.precio_zona), 0) AS total
+      FROM detalle_reservas dr
+      INNER JOIN asientos a
+        ON dr.id_asiento = a.id_asiento
+      INNER JOIN zonas z
+        ON a.id_zona = z.id_zona
+      WHERE dr.id_reserva = $1
+      `,
+      [id_reserva]
+    )
+
+    const total = Number(totalResult.rows[0].total)
+
+    const ventaResult = await client.query(
+      `
+      INSERT INTO ventas (
+        id_usuario,
+        id_reserva,
+        total_venta,
+        estado_venta
+      )
+      VALUES ($1, $2, $3, 'pagada')
+      RETURNING
+        id_venta,
+        id_usuario,
+        id_reserva,
+        fecha_venta,
+        total_venta,
+        estado_venta
+      `,
+      [id_usuario, id_reserva, total]
+    )
+
+    const venta = ventaResult.rows[0]
+
+    const referenciaPago = `TB-${Date.now()}-${id_reserva}`
+
+    const pagoResult = await client.query(
+      `
+      INSERT INTO pagos (
+        id_venta,
+        id_metodo_pago,
+        monto_pago,
+        referencia_pago,
+        estado_pago
+      )
+      VALUES ($1, $2, $3, $4, 'completado')
+      RETURNING
+        id_pago,
+        id_venta,
+        monto_pago,
+        referencia_pago,
+        fecha_pago,
+        estado_pago
+      `,
+      [venta.id_venta, id_metodo_pago, total, referenciaPago]
+    )
+
+    const asientosResult = await client.query(
+      `
+      SELECT id_asiento
+      FROM detalle_reservas
+      WHERE id_reserva = $1
+      `,
+      [id_reserva]
+    )
+
+    const boletos = []
+
+    for (const asiento of asientosResult.rows) {
+      await client.query(
+        `
+        UPDATE asientos
+        SET estado_asiento = 'vendido'
+        WHERE id_asiento = $1
+        `,
+        [asiento.id_asiento]
+      )
+
+      const boletoResult = await client.query(
+        `
+        INSERT INTO boletos (
+          codigo_unico,
+          id_venta,
+          id_asiento,
+          id_concierto,
+          estado_boleto
+        )
+        VALUES ($1, $2, $3, $4, 'activo')
+        RETURNING
+          id_boleto,
+          codigo_unico,
+          id_asiento,
+          id_concierto,
+          estado_boleto
+        `,
+        [
+          `BOL-${venta.id_venta}-${asiento.id_asiento}-${Date.now()}`,
+          venta.id_venta,
+          asiento.id_asiento,
+          reserva.id_concierto
+        ]
+      )
+
+      boletos.push(boletoResult.rows[0])
+    }
+
+    await client.query(
+      `
+      UPDATE reservas
+      SET estado_reserva = 'pagada'
+      WHERE id_reserva = $1
+      `,
+      [id_reserva]
+    )
+
+    await client.query('COMMIT')
+
+    res.json({
+      ok: true,
+      mensaje: 'Pago realizado correctamente',
+      venta,
+      pago: pagoResult.rows[0],
+      boletos
+    })
+  } catch (error) {
+    await client.query('ROLLBACK')
+
+    console.error('Error al confirmar pago:', error)
+
+    res.status(500).json({
+      ok: false,
+      mensaje: 'Error al confirmar pago'
+    })
+  } finally {
+    client.release()
+  }
+}
+
 module.exports = {
   getEventosActivos,
   getDetalleEvento,
   getAsientosEvento,
   crearReserva,
-  cancelarReserva
+  cancelarReserva,
+  confirmarPago
 }

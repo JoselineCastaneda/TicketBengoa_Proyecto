@@ -13,6 +13,8 @@ import DetalleEvento from "./pages/cliente/DetalleEvento";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SeleccionAsiento from "./pages/cliente/SeleccionAsiento";
 
+import Pago from "./pages/cliente/Pago";
+
 function App() {
   return (
     <BrowserRouter>
@@ -59,6 +61,15 @@ function App() {
           element={
             <ProtectedRoute rolPermitido="cliente">
               <SeleccionAsiento />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/cliente/pago/:idReserva"
+          element={
+            <ProtectedRoute rolPermitido="cliente">
+              <Pago />
             </ProtectedRoute>
           }
         />

@@ -251,9 +251,9 @@ const SeleccionAsiento = () => {
       setMensaje("Reserva creada correctamente. Tienes 10 minutos para pagar.");
 
       setTimeout(() => {
-        contadorRef.current?.scrollIntoView({
+        window.scrollTo({
+          top: 0,
           behavior: "smooth",
-          block: "center",
         });
       }, 150);
 
