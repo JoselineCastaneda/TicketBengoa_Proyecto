@@ -23,6 +23,7 @@ function Estadio({
 
   const COLOR_SELECCIONADO = "#9333ea";
 
+  const [svgListo, setSvgListo] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
@@ -34,6 +35,7 @@ function Estadio({
 
   const startMouseRef = useRef({ x: 0, y: 0 });
   const startOffsetRef = useRef({ x: 0, y: 0 });
+  
 
   useEffect(() => {
     zoomRef.current = zoom;
@@ -78,14 +80,11 @@ function Estadio({
     const viewport = viewportRef.current;
     if (!viewport) return;
 
-    const actualZoom = zoomRef.current;
-    const actualOffset = offsetRef.current;
-
     const centroX = viewport.clientWidth / 2;
     const centroY = viewport.clientHeight / 2;
 
-    const mapaX = (centroX - actualOffset.x) / actualZoom;
-    const mapaY = (centroY - actualOffset.y) / actualZoom;
+    const mapaX = (centroX - offsetRef.current.x) / zoomRef.current;
+    const mapaY = (centroY - offsetRef.current.y) / zoomRef.current;
 
     setZoom(nuevoZoom);
 
@@ -101,14 +100,11 @@ function Estadio({
 
     const rect = viewport.getBoundingClientRect();
 
-    const actualZoom = zoomRef.current;
-    const actualOffset = offsetRef.current;
-
     const puntoX = clientX - rect.left;
     const puntoY = clientY - rect.top;
 
-    const mapaX = (puntoX - actualOffset.x) / actualZoom;
-    const mapaY = (puntoY - actualOffset.y) / actualZoom;
+    const mapaX = (puntoX - offsetRef.current.x) / zoomRef.current;
+    const mapaY = (puntoY - offsetRef.current.y) / zoomRef.current;
 
     setZoom(nuevoZoom);
 
@@ -129,18 +125,18 @@ function Estadio({
       .trim();
 
     const zonasMapa = {
-      "zona vip": { x: 250, y: 190, zoom: 2.35 },
-      "zona ejecutiva": { x: 455, y: 185, zoom: 2.35 },
-      "zona platinum": { x: 675, y: 185, zoom: 2.35 },
+      "zona vip": { x: 250, y: 190, zoom: 3.3 },
+      "zona ejecutiva": { x: 455, y: 185, zoom: 3.1 },
+      "zona platinum": { x: 675, y: 185, zoom: 3.3 },
       "zona platium": { x: 675, y: 185, zoom: 2.35 },
 
-      "bloque a": { x: 280, y: 360, zoom: 2.35 },
-      "bloque b": { x: 350, y: 360, zoom: 2.35 },
-      "bloque e": { x: 550, y: 360, zoom: 2.55 },
-      "bloque f": { x: 610, y: 360, zoom: 2.55 },
+      "bloque a": { x: 220, y: 330, zoom: 3.7 },
+      "bloque b": { x: 340, y: 330, zoom: 3.7 },
+      "bloque e": { x: 550, y: 360, zoom: 3.7 },
+      "bloque f": { x: 670, y: 350, zoom: 3.7 },
 
-      "zona general a": { x: 330, y: 500, zoom: 2.15 },
-      "zona general b": { x: 560, y: 500, zoom: 2.15 },
+      "zona general a": { x: 400, y: 490, zoom: 4.5 },
+      "zona general b": { x: 490, y: 490, zoom: 4.5 },
       "general a": { x: 330, y: 500, zoom: 2.15 },
       "general b": { x: 560, y: 500, zoom: 2.15 },
     };
@@ -157,10 +153,10 @@ function Estadio({
   };
 
   useEffect(() => {
-    if (!enfoqueZona || !zonaSeleccionada) return;
+    if (!enfoqueZona || !zonaSeleccionada || !svgListo) return;
 
     enfocarZona(zonaSeleccionada);
-  }, [enfoqueZona]);
+  }, [enfoqueZona, zonaSeleccionada, svgListo]);
 
   const iniciarArrastre = (screenX, screenY) => {
     dragRef.current = true;
@@ -384,6 +380,8 @@ function Estadio({
           seleccionarDesdeSVG(asiento);
         };
       });
+
+      setSvgListo(true);
     };
 
     objetoSVG.addEventListener("load", manejarCargaSVG);
@@ -468,7 +466,9 @@ function Estadio({
           onDoubleClick={manejarDobleClick}
         >
           <div
-            className="estadiob-stage"
+            className={`estadiob-stage ${
+              svgListo ? "estadiob-stage-ready" : ""
+            }`}
             style={{
               transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
               transformOrigin: "top left",

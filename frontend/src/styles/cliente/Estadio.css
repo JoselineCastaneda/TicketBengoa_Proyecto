@@ -244,3 +244,21 @@
     font-size: 16px;
   }
 }
+
+.estadiob-stage {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.estadiob-stage.estadiob-stage-ready {
+  opacity: 1;
+}
+
+.estadiob-stage {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.estadiob-stage-ready {
+  opacity: 1;
+}

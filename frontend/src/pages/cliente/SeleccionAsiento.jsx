@@ -133,30 +133,32 @@ const SeleccionAsiento = () => {
   }, [id]);
 
   useEffect(() => {
-    if (!reserva?.fecha_expiracion) return;
+  if (!reserva?.fecha_expiracion) return;
 
-    const actualizarTiempo = () => {
-      const ahora = new Date().getTime();
-      const expiracion = new Date(reserva.fecha_expiracion).getTime();
+  const actualizarTiempo = () => {
+    const ahora = new Date().getTime();
+    const expiracion = new Date(reserva.fecha_expiracion).getTime();
 
-      const diferencia = Math.max(Math.floor((expiracion - ahora) / 1000), 0);
+    const diferencia = Math.max(Math.floor((expiracion - ahora) / 1000), 0);
 
-      setSegundosRestantes(diferencia);
+    setSegundosRestantes(diferencia);
 
-      if (diferencia === 0) {
-        setReserva(null);
-        setAsientosSeleccionados([]);
-        limpiarReservaLocal();
-        cargarAsientos();
-      }
-    };
+    if (diferencia === 0) {
+      setReserva(null);
+      setSegundosRestantes(0);
+      setAsientosSeleccionados([]);
+      setMensaje("");
+      limpiarReservaLocal();
+      cargarAsientos();
+    }
+  };
 
-    actualizarTiempo();
+  actualizarTiempo();
 
-    const intervalo = setInterval(actualizarTiempo, 1000);
+  const intervalo = setInterval(actualizarTiempo, 1000);
 
-    return () => clearInterval(intervalo);
-  }, [reserva]);
+  return () => clearInterval(intervalo);
+}, [reserva]);
 
   const asientosZona = useMemo(() => {
     if (!zonaSeleccionada) return [];
@@ -264,34 +266,38 @@ const SeleccionAsiento = () => {
   };
 
   const cancelarReserva = async () => {
-    if (!reserva) return;
+  if (!reserva) return;
 
-    try {
-      const response = await fetch(
-        `${API_URL}/cliente/reservas/${reserva.id_reserva}/cancelar`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      if (!data.ok) {
-        setError(data.mensaje || "Error al cancelar");
-        return;
+  try {
+    const response = await fetch(
+      `${API_URL}/cliente/reservas/${reserva.id_reserva}/cancelar`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
+    );
 
-      setReserva(null);
-      setAsientosSeleccionados([]);
-      limpiarReservaLocal();
-      cargarAsientos();
-    } catch (err) {
-      setError("Error de conexión");
+    const data = await response.json();
+
+    if (!data.ok) {
+      setError(data.mensaje || "Error al cancelar");
+      return;
     }
-  };
+
+    setReserva(null);
+    setSegundosRestantes(0);
+    setAsientosSeleccionados([]);
+    setMensaje("");
+    setError("");
+    limpiarReservaLocal();
+
+    await cargarAsientos();
+  } catch (err) {
+    setError("Error de conexión");
+  }
+};
 
   const continuarPago = () => {
     if (!reserva) return;
