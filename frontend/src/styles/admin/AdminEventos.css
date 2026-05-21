@@ -1,12 +1,12 @@
-/* ========================================
-   EVENTOS ADMIN
-======================================== */
+/* Página */
 
 .eventos-admin-page {
   width: 100%;
   min-height: 100vh;
   color: #e5e7eb;
 }
+
+/* Header */
 
 .eventos-header {
   display: flex;
@@ -57,7 +57,7 @@
   font-size: 26px;
 }
 
-/* ALERTAS */
+/* Alertas */
 
 .eventos-alert {
   padding: 13px 16px;
@@ -79,7 +79,7 @@
   border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
-/* CARDS BASE */
+/* Cards */
 
 .eventos-form-card,
 .eventos-list-card {
@@ -116,7 +116,7 @@
   font-weight: 900;
 }
 
-/* FORMULARIO */
+/* Formulario */
 
 .eventos-form-layout {
   display: grid;
@@ -175,7 +175,7 @@
   box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.12);
 }
 
-/* DATE / TIME */
+/* Fecha y hora */
 
 .eventos-form-fields input[type="date"],
 .eventos-form-fields input[type="time"] {
@@ -189,7 +189,7 @@
   cursor: pointer;
 }
 
-/* SELECTS */
+/* Selects */
 
 .eventos-form-fields select,
 .eventos-filter {
@@ -212,7 +212,7 @@
   color: #f8fafc;
 }
 
-/* BOTONES FORM */
+/* Botones */
 
 .eventos-form-actions {
   grid-column: 1 / -1;
@@ -254,7 +254,7 @@
   filter: brightness(1.08);
 }
 
-/* POSTER */
+/* Póster */
 
 .eventos-poster-panel {
   min-height: 100%;
@@ -354,7 +354,7 @@
   text-align: center;
 }
 
-/* LISTA */
+/* Lista */
 
 .eventos-list-header {
   display: flex;
@@ -414,7 +414,7 @@
   font-size: 14px;
 }
 
-/* GRID Y CARDS */
+/* Grid */
 
 .eventos-grid {
   display: grid;
@@ -439,9 +439,7 @@
 
 .evento-card:hover {
   transform: translateY(-4px);
-
   border-color: rgba(168, 85, 247, 0.22);
-
   box-shadow:
     0 24px 50px rgba(124, 58, 237, 0.16),
     0 18px 40px rgba(2, 6, 23, 0.38);
@@ -490,6 +488,8 @@
   padding: 18px;
 }
 
+/* Estados */
+
 .estado-badge {
   display: inline-flex;
   align-items: center;
@@ -508,81 +508,62 @@
 .estado-finalizado,
 .estado-pospuesto {
   color: #ffffff;
-
   border-width: 1px;
   border-style: solid;
-
-  text-shadow:
-    0 0 8px rgba(255, 255, 255, 0.35);
-
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(10px);
-
   box-shadow:
-    0 0 12px rgba(255,255,255,0.08),
-    inset 0 0 12px rgba(255,255,255,0.04);
-
+    0 0 12px rgba(255, 255, 255, 0.08),
+    inset 0 0 12px rgba(255, 255, 255, 0.04);
   transition: 0.25s ease;
 }
 
-/* ACTIVO */
 .estado-activo {
   background: rgba(34, 197, 94, 0.22);
-
   border-color: rgba(74, 222, 128, 0.7);
-
   box-shadow:
     0 0 12px rgba(34, 197, 94, 0.55),
     0 0 24px rgba(34, 197, 94, 0.22),
     inset 0 0 12px rgba(74, 222, 128, 0.12);
 }
 
-/* BORRADOR */
 .estado-borrador {
   background: rgba(168, 85, 247, 0.22);
-
   border-color: rgba(192, 132, 252, 0.7);
-
   box-shadow:
     0 0 12px rgba(168, 85, 247, 0.55),
     0 0 24px rgba(168, 85, 247, 0.22),
     inset 0 0 12px rgba(192, 132, 252, 0.12);
 }
 
-/* CANCELADO */
 .estado-cancelado {
   background: rgba(239, 68, 68, 0.22);
-
   border-color: rgba(248, 113, 113, 0.7);
-
   box-shadow:
     0 0 12px rgba(239, 68, 68, 0.55),
     0 0 24px rgba(239, 68, 68, 0.22),
     inset 0 0 12px rgba(248, 113, 113, 0.12);
 }
 
-/* FINALIZADO */
 .estado-finalizado {
   background: rgba(59, 130, 246, 0.22);
-
   border-color: rgba(96, 165, 250, 0.7);
-
   box-shadow:
     0 0 12px rgba(59, 130, 246, 0.55),
     0 0 24px rgba(59, 130, 246, 0.22),
     inset 0 0 12px rgba(96, 165, 250, 0.12);
 }
 
-/* POSPUESTO */
 .estado-pospuesto {
   background: rgba(245, 158, 11, 0.22);
-
   border-color: rgba(251, 191, 36, 0.7);
-
   box-shadow:
     0 0 12px rgba(245, 158, 11, 0.55),
     0 0 24px rgba(245, 158, 11, 0.22),
     inset 0 0 12px rgba(251, 191, 36, 0.12);
 }
+
+/* Card */
 
 .evento-card-body h3 {
   min-height: 58px;
@@ -591,11 +572,9 @@
   font-size: 22px;
   font-weight: 900;
   line-height: 1.2;
-
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
-
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -677,7 +656,7 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* RESPONSIVE */
+/* Responsive */
 
 @media (max-width: 1100px) {
   .eventos-form-layout {
@@ -720,20 +699,19 @@
   .eventos-list-card {
     border-radius: 18px;
     padding: 16px;
+    overflow: hidden;
   }
 
   .eventos-form-fields {
     grid-template-columns: 1fr;
   }
 
-  .eventos-form-actions {
+  .eventos-form-actions,
+  .eventos-card-actions {
     flex-direction: column;
   }
 
-  .eventos-btn {
-    width: 100%;
-  }
-
+  .eventos-btn,
   .eventos-toolbar,
   .eventos-search-box,
   .eventos-filter {
@@ -753,8 +731,27 @@
     min-height: auto;
   }
 
-  .eventos-card-actions {
-    flex-direction: column;
+  .eventos-form-fields select,
+  .eventos-filter,
+  .eventos-form-fields input[type="date"],
+  .eventos-form-fields input[type="time"] {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: 46px;
+    font-size: 13px;
+  }
+
+  .eventos-form-fields select,
+  .eventos-filter {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .eventos-form-fields option,
+  .eventos-filter option {
+    font-size: 14px;
   }
 }
 
@@ -771,75 +768,3 @@
     font-size: 20px;
   }
 }
-
-/* ========================================
-   FIX FINAL BADGES EVENTOS - UNIFORMES
-======================================== */
-
-.eventos-admin-page .estado-badge {
-  color: #ffffff !important;
-  border-width: 1px !important;
-  border-style: solid !important;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.35) !important;
-  backdrop-filter: blur(10px);
-}
-
-.eventos-admin-page .estado-activo {
-  background: rgba(34, 197, 94, 0.22) !important;
-  border-color: rgba(74, 222, 128, 0.7) !important;
-  box-shadow:
-    0 0 12px rgba(34, 197, 94, 0.55),
-    0 0 24px rgba(34, 197, 94, 0.22),
-    inset 0 0 12px rgba(74, 222, 128, 0.12) !important;
-}
-
-.eventos-admin-page .estado-borrador {
-  background: rgba(168, 85, 247, 0.22) !important;
-  border-color: rgba(192, 132, 252, 0.7) !important;
-  box-shadow:
-    0 0 12px rgba(168, 85, 247, 0.55),
-    0 0 24px rgba(168, 85, 247, 0.22),
-    inset 0 0 12px rgba(192, 132, 252, 0.12) !important;
-}
-@media (max-width: 768px) {
-  select,
-  input[type="date"],
-  input[type="time"] {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    height: 48px !important;
-    font-size: 13px !important;
-  }
-
-  option {
-    font-size: 14px;
-  }
-
-  .zonas-selector-card,
-  .eventos-form-card,
-  .eventos-list-card {
-    overflow: hidden;
-  }
-}
-
-@media (max-width: 768px) {
-  select,
-  input[type="date"],
-  input[type="time"] {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    height: 46px !important;
-    font-size: 13px !important;
-  }
-
-  .zonas-select,
-  .eventos-form-fields select,
-  .eventos-filter {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-

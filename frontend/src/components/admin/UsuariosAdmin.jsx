@@ -1,10 +1,10 @@
 import { FiShield, FiUser, FiUserCheck, FiUsers } from "react-icons/fi";
 
-import AdminStatCard from "./ui/AdminStatCard";
-import AdminFilterBar from "./ui/AdminFilterBar";
-import AdminPagination from "./ui/AdminPagination";
-import UsuariosTable from "./ui/UsuariosTable";
-import UsuariosForm from "./ui/UsuariosForm";
+import AdminStatCard from "./usuarios/AdminStatCard";
+import AdminFilterBar from "./usuarios/AdminFilterBar";
+import AdminPagination from "./usuarios/AdminPagination";
+import UsuariosTable from "./usuarios/UsuariosTable";
+import UsuariosForm from "./usuarios/UsuariosForm";
 
 import { useUsuariosAdmin } from "../../hooks/useUsuariosAdmin";
 
