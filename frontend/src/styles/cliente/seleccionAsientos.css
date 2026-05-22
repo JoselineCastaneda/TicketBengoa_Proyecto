@@ -481,3 +481,158 @@
     height: 390px;
   }
 }
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+.seleccion-page {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.seleccion-layout,
+.seleccion-mapa-card,
+.resumen-compra,
+.estadio-box {
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .seleccion-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .resumen-compra {
+    position: static;
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .seleccion-page {
+    padding: 18px 10px 36px;
+  }
+
+  .seleccion-header {
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .seleccion-header h1 {
+    font-size: 1.45rem;
+  }
+
+  .seleccion-header p {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .seleccion-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .seleccion-mapa-card,
+  .resumen-compra {
+    width: 100%;
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .zona-tabs {
+    gap: 8px;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+  }
+
+  .zona-tab {
+    min-width: 120px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .zona-tab span {
+    font-size: 11px;
+  }
+
+  .estadio-box {
+    padding: 8px;
+    min-height: 380px;
+    overflow: hidden;
+  }
+
+  .estadio-box-svg .estadiob-viewport {
+    height: 380px;
+  }
+
+  .leyenda-asientos {
+    gap: 10px;
+    font-size: 12px;
+    justify-content: flex-start;
+  }
+
+  .resumen-compra h2 {
+    font-size: 1.35rem;
+  }
+
+  .resumen-evento {
+    padding: 14px;
+  }
+
+  .resumen-lista {
+    min-height: 70px;
+    max-height: 180px;
+  }
+
+  .resumen-total {
+    background: rgba(88, 28, 135, 0.25);
+    border-radius: 16px;
+    padding: 18px 16px;
+    border-top: none;
+  }
+
+  .resumen-total strong {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .seleccion-page {
+    padding: 16px 8px 32px;
+  }
+
+  .seleccion-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .seleccion-mapa-card,
+  .resumen-compra {
+    padding: 12px;
+  }
+
+  .estadio-box {
+    min-height: 340px;
+  }
+
+  .estadio-box-svg .estadiob-viewport {
+    height: 340px;
+  }
+
+  .resumen-total strong {
+    font-size: 1.8rem;
+  }
+
+  .btn-reservar,
+  .btn-pagar,
+  .btn-cancelar-reserva {
+    padding: 13px;
+    font-size: 13px;
+  }
+}

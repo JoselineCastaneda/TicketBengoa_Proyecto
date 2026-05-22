@@ -35,7 +35,6 @@ function Estadio({
 
   const startMouseRef = useRef({ x: 0, y: 0 });
   const startOffsetRef = useRef({ x: 0, y: 0 });
-  
 
   useEffect(() => {
     zoomRef.current = zoom;
@@ -62,10 +61,8 @@ function Estadio({
     if (!viewport) return;
 
     const padding = 18;
-
     const zoomX = (viewport.clientWidth - padding * 2) / BASE_WIDTH;
     const zoomY = (viewport.clientHeight - padding * 2) / BASE_HEIGHT;
-
     const nuevoZoom = Math.max(Math.min(zoomX, zoomY, 1), ZOOM_MIN);
 
     setZoom(nuevoZoom);
@@ -99,7 +96,6 @@ function Estadio({
     if (!viewport) return;
 
     const rect = viewport.getBoundingClientRect();
-
     const puntoX = clientX - rect.left;
     const puntoY = clientY - rect.top;
 
@@ -154,22 +150,15 @@ function Estadio({
 
   useEffect(() => {
     if (!enfoqueZona || !zonaSeleccionada || !svgListo) return;
-
     enfocarZona(zonaSeleccionada);
-  }, [enfoqueZona, zonaSeleccionada, svgListo]);
+  }, [enfoqueZona]);
 
   const iniciarArrastre = (screenX, screenY) => {
     dragRef.current = true;
     dragMovedRef.current = false;
 
-    startMouseRef.current = {
-      x: screenX,
-      y: screenY,
-    };
-
-    startOffsetRef.current = {
-      ...offsetRef.current,
-    };
+    startMouseRef.current = { x: screenX, y: screenY };
+    startOffsetRef.current = { ...offsetRef.current };
   };
 
   const moverMapa = (screenX, screenY) => {
@@ -194,6 +183,26 @@ function Estadio({
     setTimeout(() => {
       dragMovedRef.current = false;
     }, 0);
+  };
+
+  const manejarTouchStart = (e) => {
+    if (!e.touches || e.touches.length === 0) return;
+
+    const touch = e.touches[0];
+    iniciarArrastre(touch.screenX, touch.screenY);
+  };
+
+  const manejarTouchMove = (e) => {
+    if (!e.touches || e.touches.length === 0) return;
+
+    e.preventDefault();
+
+    const touch = e.touches[0];
+    moverMapa(touch.screenX, touch.screenY);
+  };
+
+  const manejarTouchEnd = () => {
+    terminarArrastre();
   };
 
   const obtenerEstadoAsiento = (asiento) => {
@@ -233,26 +242,16 @@ function Estadio({
       forma.style.setProperty("fill", color, "important");
       forma.style.setProperty("stroke", color, "important");
       forma.style.setProperty("opacity", disponible ? "1" : "0.82", "important");
+      forma.style.setProperty("filter", "none", "important");
 
       if (estado === "seleccionado") {
         forma.style.setProperty("stroke", "#e9d5ff", "important");
         forma.style.setProperty("stroke-width", "2", "important");
-        forma.style.setProperty(
-          "filter",
-          "drop-shadow(0 0 10px #9333ea)",
-          "important"
-        );
       } else if (estado === "reservado") {
         forma.style.setProperty("stroke", "#fff7ae", "important");
         forma.style.setProperty("stroke-width", "2", "important");
-        forma.style.setProperty(
-          "filter",
-          "drop-shadow(0 0 12px #facc15)",
-          "important"
-        );
       } else {
         forma.style.setProperty("stroke-width", "1", "important");
-        forma.style.setProperty("filter", "none", "important");
       }
     });
   };
@@ -319,11 +318,34 @@ function Estadio({
         svg.style.cursor = "default";
         svg.style.shapeRendering = "geometricPrecision";
         svg.style.textRendering = "geometricPrecision";
+        svg.style.touchAction = "none";
 
         svg.onmousedown = (e) => {
           e.preventDefault();
           e.stopPropagation();
           iniciarArrastre(e.screenX, e.screenY);
+        };
+
+        svg.ontouchstart = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const touch = e.touches[0];
+          iniciarArrastre(touch.screenX, touch.screenY);
+        };
+
+        svg.ontouchmove = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const touch = e.touches[0];
+          moverMapa(touch.screenX, touch.screenY);
+        };
+
+        svg.ontouchend = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          terminarArrastre();
         };
 
         svg.ondblclick = (e) => {
@@ -350,11 +372,21 @@ function Estadio({
         svgWindow.onmouseup = () => {
           terminarArrastre();
         };
+
+        svgWindow.ontouchmove = (e) => {
+          e.preventDefault();
+
+          const touch = e.touches[0];
+          moverMapa(touch.screenX, touch.screenY);
+        };
+
+        svgWindow.ontouchend = () => {
+          terminarArrastre();
+        };
       }
 
       asientos.forEach((asiento) => {
         const asientoSvg = svgDoc.getElementById(asiento.codigo_svg);
-
         if (!asientoSvg) return;
 
         const estado = obtenerEstadoAsiento(asiento);
@@ -373,10 +405,31 @@ function Estadio({
           iniciarArrastre(e.screenX, e.screenY);
         };
 
-        asientoSvg.onclick = (e) => {
+        asientoSvg.ontouchstart = (e) => {
           e.preventDefault();
           e.stopPropagation();
 
+          const touch = e.touches[0];
+          iniciarArrastre(touch.screenX, touch.screenY);
+        };
+
+        asientoSvg.ontouchmove = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const touch = e.touches[0];
+          moverMapa(touch.screenX, touch.screenY);
+        };
+
+        asientoSvg.ontouchend = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          terminarArrastre();
+        };
+
+        asientoSvg.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
           seleccionarDesdeSVG(asiento);
         };
       });
@@ -464,6 +517,9 @@ function Estadio({
           ref={viewportRef}
           className="estadiob-viewport"
           onDoubleClick={manejarDobleClick}
+          onTouchStart={manejarTouchStart}
+          onTouchMove={manejarTouchMove}
+          onTouchEnd={manejarTouchEnd}
         >
           <div
             className={`estadiob-stage ${

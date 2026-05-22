@@ -17,6 +17,7 @@ const SeleccionAsiento = () => {
 
   const estadioBoxRef = useRef(null);
   const contadorRef = useRef(null);
+  const vistaEstadioRef = useRef(null);
 
   const [evento, setEvento] = useState(null);
   const [zonas, setZonas] = useState([]);
@@ -78,6 +79,21 @@ const SeleccionAsiento = () => {
     }
   };
 
+  const enfocarVistaEstadio = () => {
+    const elemento = estadioBoxRef.current;
+    if (!elemento) return;
+
+    const rect = elemento.getBoundingClientRect();
+
+    const posicion =
+      rect.top + window.scrollY - window.innerHeight / 2 + rect.height / 2;
+
+    window.scrollTo({
+      top: posicion,
+      behavior: "smooth",
+    });
+  };
+
   const cargarAsientos = async () => {
     try {
       const response = await fetch(`${API_URL}/cliente/eventos/${id}/asientos`, {
@@ -133,32 +149,47 @@ const SeleccionAsiento = () => {
   }, [id]);
 
   useEffect(() => {
-  if (!reserva?.fecha_expiracion) return;
+    if (loading) return;
 
-  const actualizarTiempo = () => {
-    const ahora = new Date().getTime();
-    const expiracion = new Date(reserva.fecha_expiracion).getTime();
+    requestAnimationFrame(() => {
+      const elemento = vistaEstadioRef.current;
+      if (!elemento) return;
 
-    const diferencia = Math.max(Math.floor((expiracion - ahora) / 1000), 0);
+      const posicion = elemento.getBoundingClientRect().top + window.scrollY - 115;
 
-    setSegundosRestantes(diferencia);
+      window.scrollTo({
+        top: posicion,
+      });
+    });
+  }, [loading]);
 
-    if (diferencia === 0) {
-      setReserva(null);
-      setSegundosRestantes(0);
-      setAsientosSeleccionados([]);
-      setMensaje("");
-      limpiarReservaLocal();
-      cargarAsientos();
-    }
-  };
+  useEffect(() => {
+    if (!reserva?.fecha_expiracion) return;
 
-  actualizarTiempo();
+    const actualizarTiempo = () => {
+      const ahora = new Date().getTime();
+      const expiracion = new Date(reserva.fecha_expiracion).getTime();
 
-  const intervalo = setInterval(actualizarTiempo, 1000);
+      const diferencia = Math.max(Math.floor((expiracion - ahora) / 1000), 0);
 
-  return () => clearInterval(intervalo);
-}, [reserva]);
+      setSegundosRestantes(diferencia);
+
+      if (diferencia === 0) {
+        setReserva(null);
+        setSegundosRestantes(0);
+        setAsientosSeleccionados([]);
+        setMensaje("");
+        limpiarReservaLocal();
+        cargarAsientos();
+      }
+    };
+
+    actualizarTiempo();
+
+    const intervalo = setInterval(actualizarTiempo, 1000);
+
+    return () => clearInterval(intervalo);
+  }, [reserva]);
 
   const asientosZona = useMemo(() => {
     if (!zonaSeleccionada) return [];
@@ -182,12 +213,8 @@ const SeleccionAsiento = () => {
 
     setTimeout(() => {
       setEnfoqueZona((prev) => prev + 1);
-
-      estadioBoxRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 80);
+      enfocarVistaEstadio();
+    }, 120);
   };
 
   const seleccionarAsiento = (asiento) => {
@@ -266,38 +293,38 @@ const SeleccionAsiento = () => {
   };
 
   const cancelarReserva = async () => {
-  if (!reserva) return;
+    if (!reserva) return;
 
-  try {
-    const response = await fetch(
-      `${API_URL}/cliente/reservas/${reserva.id_reserva}/cancelar`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {
+      const response = await fetch(
+        `${API_URL}/cliente/reservas/${reserva.id_reserva}/cancelar`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (!data.ok) {
+        setError(data.mensaje || "Error al cancelar");
+        return;
       }
-    );
 
-    const data = await response.json();
+      setReserva(null);
+      setSegundosRestantes(0);
+      setAsientosSeleccionados([]);
+      setMensaje("");
+      setError("");
+      limpiarReservaLocal();
 
-    if (!data.ok) {
-      setError(data.mensaje || "Error al cancelar");
-      return;
+      await cargarAsientos();
+    } catch (err) {
+      setError("Error de conexión");
     }
-
-    setReserva(null);
-    setSegundosRestantes(0);
-    setAsientosSeleccionados([]);
-    setMensaje("");
-    setError("");
-    limpiarReservaLocal();
-
-    await cargarAsientos();
-  } catch (err) {
-    setError("Error de conexión");
-  }
-};
+  };
 
   const continuarPago = () => {
     if (!reserva) return;
@@ -335,7 +362,7 @@ const SeleccionAsiento = () => {
       <ClienteNavbar />
 
       <main className="seleccion-page">
-        <section className="seleccion-header">
+        <section ref={vistaEstadioRef} className="seleccion-header">
           <div>
             <h1>Selecciona tus asientos</h1>
 
