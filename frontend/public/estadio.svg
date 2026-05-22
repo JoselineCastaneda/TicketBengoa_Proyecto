@@ -5,12 +5,34 @@
    height="1250"
    version="1.1"
    id="svg1593"
+   sodipodi:docname="estadio.svg"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="3.3088"
+     inkscape:cx="611.3999"
+     inkscape:cy="521.48815"
+     inkscape:window-width="1366"
+     inkscape:window-height="697"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1593" />
   <title
      id="title1">Estadio Bengoa - estilo Galaxy Azul Neon</title>
   <defs
@@ -18027,7 +18049,7 @@
      class="tb-seat" />
   <ellipse
      style="stroke-dasharray:none;paint-order:stroke fill markers"
-     id="ZonaA346"
+     id="ZonaA348"
      cx="740.83618"
      cy="441.12778"
      rx="4.5633335"
@@ -18147,7 +18169,7 @@
      class="tb-seat" />
   <ellipse
      style="stroke-dasharray:none;paint-order:stroke fill markers"
-     id="ZonaA345"
+     id="ZonaA347"
      cx="725.45959"
      cy="441.12778"
      rx="4.5633335"
@@ -19403,7 +19425,7 @@
      class="tb-seat" />
   <ellipse
      style="stroke-dasharray:none;paint-order:stroke fill markers"
-     id="ZonaA5766"
+     id="ZonaA576"
      cx="638.13226"
      cy="533.25415"
      rx="4.6622849"
@@ -45100,10 +45122,10 @@
        y="1006.4113">C1</tspan></text>
   <ellipse
      style="stroke-dasharray:none;paint-order:stroke fill markers"
-     id="ZonaA344-8"
+     id="ZonaA345"
      cx="694.86108"
      cy="441.0748"
-     rx="4.5633335"
+     rx="4.5630002"
      ry="5.8374057"
      class="tb-seat" />
   <text
@@ -45119,7 +45141,7 @@
        y="401.47568">A345</tspan></text>
   <ellipse
      style="stroke-dasharray:none;paint-order:stroke fill markers"
-     id="ZonaA344-2"
+     id="ZonaA346"
      cx="710.47198"
      cy="441.03647"
      rx="4.5633335"

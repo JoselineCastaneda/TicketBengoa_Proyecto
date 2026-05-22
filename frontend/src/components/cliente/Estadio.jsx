@@ -255,6 +255,8 @@ function Estadio({
       forma.style.setProperty("stroke", color, "important");
       forma.style.setProperty("opacity", disponible ? "1" : "0.82", "important");
       forma.style.setProperty("filter", "none", "important");
+      forma.style.setProperty("pointer-events", "auto", "important");
+      forma.style.cursor = disponible && !reservaActiva ? "pointer" : "default";
 
       if (estado === "seleccionado") {
         forma.style.setProperty("stroke", "#e9d5ff", "important");
@@ -282,6 +284,72 @@ function Estadio({
     }
 
     onSeleccionarAsiento(asiento);
+  };
+
+  const asignarEventosAElemento = (elemento, asiento) => {
+    elemento.style.pointerEvents = "auto";
+    elemento.style.cursor =
+      asiento.estado_asiento === "disponible" && !reservaActiva
+        ? "pointer"
+        : "default";
+
+    elemento.onmousedown = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      iniciarArrastre(e.screenX, e.screenY);
+    };
+
+    elemento.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      seleccionarDesdeSVG(asiento);
+    };
+
+    elemento.ontouchstart = (e) => {
+      e.stopPropagation();
+
+      const touch = e.touches[0];
+
+      dragRef.current = true;
+      dragMovedRef.current = false;
+
+      startMouseRef.current = {
+        x: touch.screenX,
+        y: touch.screenY,
+      };
+
+      startOffsetRef.current = {
+        ...offsetRef.current,
+      };
+    };
+
+    elemento.ontouchmove = (e) => {
+      e.stopPropagation();
+
+      const touch = e.touches[0];
+
+      const dx = Math.abs(touch.screenX - startMouseRef.current.x);
+      const dy = Math.abs(touch.screenY - startMouseRef.current.y);
+
+      if (dx > 8 || dy > 8) {
+        e.preventDefault();
+        dragMovedRef.current = true;
+        moverMapa(touch.screenX, touch.screenY);
+      }
+    };
+
+    elemento.ontouchend = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const fueArrastre = dragMovedRef.current;
+
+      terminarArrastre();
+
+      if (!fueArrastre) {
+        seleccionarDesdeSVG(asiento, true);
+      }
+    };
   };
 
   useEffect(() => {
@@ -399,7 +467,6 @@ function Estadio({
 
       asientos.forEach((asiento) => {
         const asientoSvg = svgDoc.getElementById(asiento.codigo_svg);
-
         if (!asientoSvg) return;
 
         const estado = obtenerEstadoAsiento(asiento);
@@ -407,68 +474,17 @@ function Estadio({
 
         aplicarEstiloAsiento(asientoSvg, estado, disponible);
 
+        asientoSvg.style.pointerEvents = "auto";
         asientoSvg.style.cursor =
           disponible && !reservaActiva ? "pointer" : "default";
 
-        asientoSvg.style.pointerEvents = "auto";
+        asignarEventosAElemento(asientoSvg, asiento);
 
-        asientoSvg.onmousedown = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          iniciarArrastre(e.screenX, e.screenY);
-        };
+        const formas = obtenerFormasAsiento(asientoSvg);
 
-        asientoSvg.ontouchstart = (e) => {
-          e.stopPropagation();
-
-          const touch = e.touches[0];
-
-          dragRef.current = true;
-          dragMovedRef.current = false;
-
-          startMouseRef.current = {
-            x: touch.screenX,
-            y: touch.screenY,
-          };
-
-          startOffsetRef.current = {
-            ...offsetRef.current,
-          };
-        };
-
-        asientoSvg.ontouchmove = (e) => {
-          e.stopPropagation();
-
-          const touch = e.touches[0];
-
-          const dx = Math.abs(touch.screenX - startMouseRef.current.x);
-          const dy = Math.abs(touch.screenY - startMouseRef.current.y);
-
-          if (dx > 8 || dy > 8) {
-            e.preventDefault();
-            dragMovedRef.current = true;
-            moverMapa(touch.screenX, touch.screenY);
-          }
-        };
-
-        asientoSvg.ontouchend = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-
-          const fueArrastre = dragMovedRef.current;
-
-          terminarArrastre();
-
-          if (!fueArrastre) {
-            seleccionarDesdeSVG(asiento, true);
-          }
-        };
-
-        asientoSvg.onclick = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          seleccionarDesdeSVG(asiento);
-        };
+        formas.forEach((forma) => {
+          asignarEventosAElemento(forma, asiento);
+        });
       });
 
       setSvgListo(true);
