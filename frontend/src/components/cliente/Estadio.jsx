@@ -150,6 +150,7 @@ function Estadio({
 
   useEffect(() => {
     if (!enfoqueZona || !zonaSeleccionada || !svgListo) return;
+
     enfocarZona(zonaSeleccionada);
   }, [enfoqueZona]);
 
@@ -157,8 +158,14 @@ function Estadio({
     dragRef.current = true;
     dragMovedRef.current = false;
 
-    startMouseRef.current = { x: screenX, y: screenY };
-    startOffsetRef.current = { ...offsetRef.current };
+    startMouseRef.current = {
+      x: screenX,
+      y: screenY,
+    };
+
+    startOffsetRef.current = {
+      ...offsetRef.current,
+    };
   };
 
   const moverMapa = (screenX, screenY) => {
@@ -195,10 +202,15 @@ function Estadio({
   const manejarTouchMove = (e) => {
     if (!e.touches || e.touches.length === 0) return;
 
-    e.preventDefault();
-
     const touch = e.touches[0];
-    moverMapa(touch.screenX, touch.screenY);
+
+    const dx = Math.abs(touch.screenX - startMouseRef.current.x);
+    const dy = Math.abs(touch.screenY - startMouseRef.current.y);
+
+    if (dx > 8 || dy > 8) {
+      e.preventDefault();
+      moverMapa(touch.screenX, touch.screenY);
+    }
   };
 
   const manejarTouchEnd = () => {
@@ -256,8 +268,8 @@ function Estadio({
     });
   };
 
-  const seleccionarDesdeSVG = (asiento) => {
-    if (dragMovedRef.current) return;
+  const seleccionarDesdeSVG = (asiento, ignorarArrastre = false) => {
+    if (!ignorarArrastre && dragMovedRef.current) return;
     if (reservaActiva) return;
     if (asiento.estado_asiento !== "disponible") return;
 
@@ -387,6 +399,7 @@ function Estadio({
 
       asientos.forEach((asiento) => {
         const asientoSvg = svgDoc.getElementById(asiento.codigo_svg);
+
         if (!asientoSvg) return;
 
         const estado = obtenerEstadoAsiento(asiento);
@@ -406,25 +419,49 @@ function Estadio({
         };
 
         asientoSvg.ontouchstart = (e) => {
-          e.preventDefault();
           e.stopPropagation();
 
           const touch = e.touches[0];
-          iniciarArrastre(touch.screenX, touch.screenY);
+
+          dragRef.current = true;
+          dragMovedRef.current = false;
+
+          startMouseRef.current = {
+            x: touch.screenX,
+            y: touch.screenY,
+          };
+
+          startOffsetRef.current = {
+            ...offsetRef.current,
+          };
         };
 
         asientoSvg.ontouchmove = (e) => {
-          e.preventDefault();
           e.stopPropagation();
 
           const touch = e.touches[0];
-          moverMapa(touch.screenX, touch.screenY);
+
+          const dx = Math.abs(touch.screenX - startMouseRef.current.x);
+          const dy = Math.abs(touch.screenY - startMouseRef.current.y);
+
+          if (dx > 8 || dy > 8) {
+            e.preventDefault();
+            dragMovedRef.current = true;
+            moverMapa(touch.screenX, touch.screenY);
+          }
         };
 
         asientoSvg.ontouchend = (e) => {
           e.preventDefault();
           e.stopPropagation();
+
+          const fueArrastre = dragMovedRef.current;
+
           terminarArrastre();
+
+          if (!fueArrastre) {
+            seleccionarDesdeSVG(asiento, true);
+          }
         };
 
         asientoSvg.onclick = (e) => {
