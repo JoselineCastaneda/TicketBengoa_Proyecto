@@ -7,7 +7,8 @@ const {
   getAsientosEvento,
   crearReserva,
   cancelarReserva,
-  confirmarPago
+  confirmarPago,
+  getBoletosPorVenta
 } = require('../controllers/cliente.controller')
 
 const { verificarToken } = require('../middlewares/auth.middleware')
@@ -53,6 +54,13 @@ router.post(
   verificarToken,
   verificarRol('cliente'),
   confirmarPago
+)
+
+router.get(
+  '/ventas/:id_venta/boletos',
+  verificarToken,
+  verificarRol('cliente'),
+  getBoletosPorVenta
 )
 
 module.exports = router

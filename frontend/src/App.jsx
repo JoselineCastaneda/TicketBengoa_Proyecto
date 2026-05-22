@@ -9,11 +9,11 @@ import Validador from "./pages/Validador";
 
 import ClienteHome from "./pages/cliente/ClienteHome";
 import DetalleEvento from "./pages/cliente/DetalleEvento";
+import SeleccionAsiento from "./pages/cliente/SeleccionAsiento";
+import Pago from "./pages/cliente/Pago";
+import BoletosGenerados from "./pages/cliente/BoletosGenerados";
 
 import ProtectedRoute from "./components/ProtectedRoute";
-import SeleccionAsiento from "./pages/cliente/SeleccionAsiento";
-
-import Pago from "./pages/cliente/Pago";
 
 function App() {
   return (
@@ -55,7 +55,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        
+
         <Route
           path="/cliente/eventos/:id/asientos"
           element={
@@ -70,6 +70,15 @@ function App() {
           element={
             <ProtectedRoute rolPermitido="cliente">
               <Pago />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/cliente/boletos-generados/:id_venta"
+          element={
+            <ProtectedRoute rolPermitido="cliente">
+              <BoletosGenerados />
             </ProtectedRoute>
           }
         />

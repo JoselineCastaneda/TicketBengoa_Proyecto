@@ -116,7 +116,9 @@ const Pago = () => {
       );
 
       setTimeout(() => {
-        navigate("/cliente/mis-boletos");
+        navigate(
+          `/cliente/boletos-generados/${data.venta.id_venta}`
+        );
       }, 1800);
     } catch (err) {
       setError("Error de conexión con el servidor");

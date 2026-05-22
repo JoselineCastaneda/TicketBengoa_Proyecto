@@ -1,4 +1,5 @@
 const pool = require('../config/db')
+const jwt = require('jsonwebtoken')
 
 const liberarReservasVencidas = async (client, id_concierto) => {
   const reservasVencidas = await client.query(
@@ -538,6 +539,14 @@ const confirmarPago = async (req, res) => {
       })
     }
 
+    if (!process.env.JWT_QR_SECRET) {
+      await client.query('ROLLBACK')
+      return res.status(500).json({
+        ok: false,
+        mensaje: 'No está configurada la clave JWT_QR_SECRET'
+      })
+    }
+
     const reservaResult = await client.query(
       `
       SELECT
@@ -702,6 +711,20 @@ const confirmarPago = async (req, res) => {
         [asiento.id_asiento]
       )
 
+      const codigoBoleto = `BOL-${venta.id_venta}-${asiento.id_asiento}-${Date.now()}`
+
+      const tokenQr = jwt.sign(
+        {
+          codigo_boleto: codigoBoleto,
+          id_venta: venta.id_venta,
+          id_asiento: asiento.id_asiento,
+          id_concierto: reserva.id_concierto,
+          id_usuario
+        },
+        process.env.JWT_QR_SECRET,
+        { expiresIn: '365d' }
+      )
+
       const boletoResult = await client.query(
         `
         INSERT INTO boletos (
@@ -709,21 +732,25 @@ const confirmarPago = async (req, res) => {
           id_venta,
           id_asiento,
           id_concierto,
+          token_qr,
           estado_boleto
         )
-        VALUES ($1, $2, $3, $4, 'activo')
+        VALUES ($1, $2, $3, $4, $5, 'activo')
         RETURNING
           id_boleto,
           codigo_unico,
+          id_venta,
           id_asiento,
           id_concierto,
+          token_qr,
           estado_boleto
         `,
         [
-          `BOL-${venta.id_venta}-${asiento.id_asiento}-${Date.now()}`,
+          codigoBoleto,
           venta.id_venta,
           asiento.id_asiento,
-          reserva.id_concierto
+          reserva.id_concierto,
+          tokenQr
         ]
       )
 
@@ -762,11 +789,98 @@ const confirmarPago = async (req, res) => {
   }
 }
 
+const getBoletosPorVenta = async (req, res) => {
+  try {
+    const id_usuario = req.usuario.id_usuario
+    const { id_venta } = req.params
+
+    const result = await pool.query(
+      `
+      SELECT
+        b.id_boleto,
+        b.codigo_unico,
+        b.token_qr,
+        b.estado_boleto,
+        b.fecha_emision,
+
+        v.id_venta,
+        v.total_venta,
+        v.fecha_venta,
+
+        c.id_concierto,
+        c.nombre_concierto,
+        c.fecha,
+        c.hora,
+        c.imagen,
+
+        ar.nombre_artista,
+
+        a.id_asiento,
+        a.fila_asiento,
+        a.numero_asiento,
+        a.codigo_svg,
+
+        z.nombre_zona,
+        z.precio_zona
+      FROM boletos b
+      INNER JOIN ventas v
+        ON b.id_venta = v.id_venta
+      INNER JOIN conciertos c
+        ON b.id_concierto = c.id_concierto
+      INNER JOIN artistas ar
+        ON c.id_artista = ar.id_artista
+      INNER JOIN asientos a
+        ON b.id_asiento = a.id_asiento
+      INNER JOIN zonas z
+        ON a.id_zona = z.id_zona
+      WHERE b.id_venta = $1
+        AND v.id_usuario = $2
+      ORDER BY b.id_boleto ASC
+      `,
+      [id_venta, id_usuario]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        ok: false,
+        mensaje: 'No se encontraron boletos para esta compra'
+      })
+    }
+
+    res.json({
+      ok: true,
+      venta: {
+        id_venta: result.rows[0].id_venta,
+        total_venta: result.rows[0].total_venta,
+        fecha_venta: result.rows[0].fecha_venta
+      },
+      evento: {
+        id_concierto: result.rows[0].id_concierto,
+        nombre_concierto: result.rows[0].nombre_concierto,
+        nombre_artista: result.rows[0].nombre_artista,
+        fecha: result.rows[0].fecha,
+        hora: result.rows[0].hora,
+        imagen: result.rows[0].imagen
+      },
+      boletos: result.rows
+    })
+  } catch (error) {
+    console.error('Error al obtener boletos por venta:', error)
+
+    res.status(500).json({
+      ok: false,
+      mensaje: 'Error al obtener boletos de la compra'
+    })
+  }
+}
+
 module.exports = {
   getEventosActivos,
   getDetalleEvento,
   getAsientosEvento,
   crearReserva,
   cancelarReserva,
-  confirmarPago
+  confirmarPago,
+  getBoletosPorVenta
 }
+
