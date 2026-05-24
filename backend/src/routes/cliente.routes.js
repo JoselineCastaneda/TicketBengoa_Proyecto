@@ -8,7 +8,8 @@ const {
   crearReserva,
   cancelarReserva,
   confirmarPago,
-  getBoletosPorVenta
+  getBoletosPorVenta,
+  getMisBoletos
 } = require('../controllers/cliente.controller')
 
 const { verificarToken } = require('../middlewares/auth.middleware')
@@ -61,6 +62,13 @@ router.get(
   verificarToken,
   verificarRol('cliente'),
   getBoletosPorVenta
+)
+
+router.get(
+  '/boletos',
+  verificarToken,
+  verificarRol('cliente'),
+  getMisBoletos
 )
 
 module.exports = router

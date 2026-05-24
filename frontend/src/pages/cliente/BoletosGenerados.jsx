@@ -219,11 +219,29 @@ const BoletosGenerados = () => {
           </section>
 
           <div className="bg-actions">
-            <button onClick={() => navigate("/cliente")}>
+            <button
+              onClick={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+
+                navigate("/cliente");
+              }}
+            >
               Volver al inicio
             </button>
 
-            <button onClick={() => navigate("/cliente/mis-boletos")}>
+            <button
+              onClick={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+
+                navigate("/cliente/mis-boletos");
+              }}
+            >
               Ver mis boletos
             </button>
           </div>

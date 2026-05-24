@@ -802,24 +802,19 @@ const getBoletosPorVenta = async (req, res) => {
         b.token_qr,
         b.estado_boleto,
         b.fecha_emision,
-
         v.id_venta,
         v.total_venta,
         v.fecha_venta,
-
         c.id_concierto,
         c.nombre_concierto,
         c.fecha,
         c.hora,
         c.imagen,
-
         ar.nombre_artista,
-
         a.id_asiento,
         a.fila_asiento,
         a.numero_asiento,
         a.codigo_svg,
-
         z.nombre_zona,
         z.precio_zona
       FROM boletos b
@@ -874,6 +869,64 @@ const getBoletosPorVenta = async (req, res) => {
   }
 }
 
+const getMisBoletos = async (req, res) => {
+  try {
+    const id_usuario = req.usuario.id_usuario
+
+    const result = await pool.query(
+      `
+      SELECT
+        b.id_boleto,
+        b.codigo_unico,
+        b.token_qr,
+        b.estado_boleto,
+        b.fecha_emision,
+        v.id_venta,
+        v.total_venta,
+        v.fecha_venta,
+        c.id_concierto,
+        c.nombre_concierto,
+        c.fecha,
+        c.hora,
+        c.imagen,
+        ar.nombre_artista,
+        a.id_asiento,
+        a.fila_asiento,
+        a.numero_asiento,
+        a.codigo_svg,
+        z.nombre_zona,
+        z.precio_zona
+      FROM boletos b
+      INNER JOIN ventas v
+        ON b.id_venta = v.id_venta
+      INNER JOIN conciertos c
+        ON b.id_concierto = c.id_concierto
+      INNER JOIN artistas ar
+        ON c.id_artista = ar.id_artista
+      INNER JOIN asientos a
+        ON b.id_asiento = a.id_asiento
+      INNER JOIN zonas z
+        ON a.id_zona = z.id_zona
+      WHERE v.id_usuario = $1
+      ORDER BY c.fecha DESC, b.fecha_emision DESC
+      `,
+      [id_usuario]
+    )
+
+    res.json({
+      ok: true,
+      boletos: result.rows
+    })
+  } catch (error) {
+    console.error('Error al obtener mis boletos:', error)
+
+    res.status(500).json({
+      ok: false,
+      mensaje: 'Error al obtener tus boletos'
+    })
+  }
+}
+
 module.exports = {
   getEventosActivos,
   getDetalleEvento,
@@ -881,6 +934,6 @@ module.exports = {
   crearReserva,
   cancelarReserva,
   confirmarPago,
-  getBoletosPorVenta
+  getBoletosPorVenta,
+  getMisBoletos
 }
-

@@ -49,7 +49,10 @@ const ClienteNavbar = () => {
             <span>Eventos</span>
           </Link>
 
-          <Link to="/cliente" className="cliente-nav-link">
+          <Link
+            to="/cliente/mis-boletos"
+            className="cliente-nav-link"
+          >
             <FiCreditCard />
             <span>Mis boletos</span>
           </Link>
@@ -114,7 +117,10 @@ const ClienteNavbar = () => {
                 <span>Eventos</span>
               </Link>
 
-              <Link to="/cliente" onClick={cerrarMenu}>
+              <Link
+                to="/cliente/mis-boletos"
+                onClick={cerrarMenu}
+              >
                 <FiCreditCard />
                 <span>Mis boletos</span>
               </Link>

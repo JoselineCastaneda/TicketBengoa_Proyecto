@@ -15,6 +15,8 @@ import BoletosGenerados from "./pages/cliente/BoletosGenerados";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
+import MisBoletos from "./pages/cliente/MisBoletos";
+
 function App() {
   return (
     <BrowserRouter>
@@ -70,6 +72,15 @@ function App() {
           element={
             <ProtectedRoute rolPermitido="cliente">
               <Pago />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/cliente/mis-boletos"
+          element={
+            <ProtectedRoute rolPermitido="cliente">
+              <MisBoletos />
             </ProtectedRoute>
           }
         />
