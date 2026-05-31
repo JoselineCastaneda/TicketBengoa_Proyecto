@@ -7,8 +7,6 @@ import {
   FiMap,
   FiDollarSign,
   FiUsers,
-  FiUser,
-  FiSettings,
   FiLogOut,
 } from "react-icons/fi";
 
@@ -26,8 +24,6 @@ const SidebarAdmin = ({ setVista, vistaActiva }) => {
     { id: "zonas", label: "Zonas por Evento", icon: <FiMap /> },
     { id: "ventas", label: "Historial de Ventas", icon: <FiDollarSign /> },
     { id: "usuarios", label: "Gestión de Usuarios", icon: <FiUsers /> },
-    { id: "clientes", label: "Clientes", icon: <FiUser /> },
-    { id: "config", label: "Configuración", icon: <FiSettings /> },
   ];
 
   const nombreUsuario = usuario?.nombre
@@ -52,6 +48,8 @@ const SidebarAdmin = ({ setVista, vistaActiva }) => {
   return (
     <aside className="sidebar-admin">
       <div className="sidebar-brand">
+        <div className="sidebar-brand-mini">TB</div>
+
         <div className="sidebar-brand-glow" />
 
         <div className="sidebar-brand-content">
