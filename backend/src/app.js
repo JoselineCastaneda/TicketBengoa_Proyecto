@@ -11,6 +11,7 @@ const zonaRoutes = require("./routes/zona.routes");
 const usuarioRoutes = require("./routes/usuario.routes");
 const clienteRoutes = require("./routes/cliente.routes");
 const adminRoutes = require("./routes/admin.routes");
+const validadorRoutes = require("./routes/validador.routes");
 
 const app = express();
 
@@ -34,5 +35,6 @@ app.use("/api/zonas", zonaRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/cliente", clienteRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/validador", validadorRoutes);
 
 module.exports = app;
