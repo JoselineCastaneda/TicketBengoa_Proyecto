@@ -7,7 +7,6 @@ import {
   FiX,
   FiCreditCard,
   FiHome,
-  FiCalendar,
 } from "react-icons/fi";
 import { cerrarSesion } from "../../auth/auth";
 import "../../styles/cliente/cliente.css";
@@ -42,11 +41,6 @@ const ClienteNavbar = () => {
           <Link to="/cliente" className="cliente-nav-link active">
             <FiHome />
             <span>Inicio</span>
-          </Link>
-
-          <Link to="/cliente" className="cliente-nav-link">
-            <FiCalendar />
-            <span>Eventos</span>
           </Link>
 
           <Link
@@ -89,7 +83,10 @@ const ClienteNavbar = () => {
 
       {menuAbierto && (
         <>
-          <div className="cliente-sidebar-overlay" onClick={cerrarMenu}></div>
+          <div
+            className="cliente-sidebar-overlay"
+            onClick={cerrarMenu}
+          ></div>
 
           <aside className="cliente-sidebar">
             <div className="cliente-sidebar-header">
@@ -107,14 +104,13 @@ const ClienteNavbar = () => {
             </div>
 
             <nav className="cliente-sidebar-menu">
-              <Link to="/cliente" onClick={cerrarMenu} className="active">
+              <Link
+                to="/cliente"
+                onClick={cerrarMenu}
+                className="active"
+              >
                 <FiHome />
                 <span>Inicio</span>
-              </Link>
-
-              <Link to="/cliente" onClick={cerrarMenu}>
-                <FiCalendar />
-                <span>Eventos</span>
               </Link>
 
               <Link
@@ -127,7 +123,9 @@ const ClienteNavbar = () => {
             </nav>
 
             <div className="cliente-sidebar-user">
-              <div className="cliente-profile-avatar">{inicialUsuario}</div>
+              <div className="cliente-profile-avatar">
+                {inicialUsuario}
+              </div>
               <strong>{nombreUsuario}</strong>
             </div>
 

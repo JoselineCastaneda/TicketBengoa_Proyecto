@@ -16,19 +16,32 @@ const Login = () => {
   const handleLogin = async () => {
     setError("");
 
-    if (!correo || !password) {
-      setError("Todos los campos son obligatorios");
+    const correoLimpio = correo.trim().toLowerCase();
+    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!correoLimpio) {
+      setError("El correo electrónico es obligatorio.");
+      return;
+    }
+
+    if (!regexCorreo.test(correoLimpio)) {
+      setError("Ingresa un correo válido.");
+      return;
+    }
+
+    if (!password) {
+      setError("La contraseña es obligatoria.");
       return;
     }
 
     setLoading(true);
 
-    const res = await loginUsuario(correo, password);
+    const res = await loginUsuario(correoLimpio, password);
 
     setLoading(false);
 
     if (!res.ok) {
-      setError(res.mensaje);
+      setError("Correo o contraseña incorrectos.");
       return;
     }
 
@@ -46,6 +59,10 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-card">
+        <h1 className="login-logo">
+          Ticket<span>Bengoa</span>
+        </h1>
+
         <h2 className="login-title">Iniciar Sesión</h2>
 
         {error && <p className="login-error">{error}</p>}
@@ -54,7 +71,10 @@ const Login = () => {
           type="email"
           placeholder="Correo electrónico"
           value={correo}
-          onChange={(e) => setCorreo(e.target.value)}
+          onChange={(e) => {
+            setCorreo(e.target.value);
+            setError("");
+          }}
           className="login-input"
         />
 
@@ -63,7 +83,10 @@ const Login = () => {
             type={mostrar ? "text" : "password"}
             placeholder="Contraseña"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setError("");
+            }}
             className="login-input password-input"
           />
 
@@ -80,16 +103,12 @@ const Login = () => {
           ¿Olvidaste tu contraseña?
         </p>
 
-        <button
-          className="login-btn"
-          onClick={handleLogin}
-          disabled={loading}
-        >
+        <button className="login-btn" onClick={handleLogin} disabled={loading}>
           {loading ? "Cargando..." : "Ingresar"}
         </button>
 
         <p className="signup" onClick={() => navigate("/registro")}>
-          ¿No tienes cuenta? Registrarse
+          ¿No tienes cuenta? <span>Registrarse</span>
         </p>
       </div>
     </div>

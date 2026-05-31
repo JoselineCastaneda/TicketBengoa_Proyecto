@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { registrarUsuario } from "../auth/auth";
@@ -18,50 +18,108 @@ const Registro = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const nombreRef = useRef(null);
+  const apellidoRef = useRef(null);
+  const correoRef = useRef(null);
+  const passwordRef = useRef(null);
+  const confirmarRef = useRef(null);
+
   const navigate = useNavigate();
+
+  const limpiarMensajes = () => {
+    setError("");
+    setMensaje("");
+  };
 
   const handleRegistro = async () => {
     setError("");
     setMensaje("");
 
-    if (!nombre || !apellido || !correo || !password || !confirmar) {
-      setError("Todos los campos son obligatorios");
+    const nombreLimpio = nombre.trim();
+    const apellidoLimpio = apellido.trim();
+    const correoLimpio = correo.trim().toLowerCase();
+
+    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regexSoloLetras = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+
+    if (!nombreLimpio) {
+      setError("El nombre es obligatorio.");
+      nombreRef.current.focus();
       return;
     }
 
-    if (password.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres");
+    if (!regexSoloLetras.test(nombreLimpio)) {
+      setError("El nombre no debe contener números.");
+      nombreRef.current.focus();
+      return;
+    }
+
+    if (!apellidoLimpio) {
+      setError("El apellido es obligatorio.");
+      apellidoRef.current.focus();
+      return;
+    }
+
+    if (!regexSoloLetras.test(apellidoLimpio)) {
+      setError("El apellido no debe contener números.");
+      apellidoRef.current.focus();
+      return;
+    }
+
+    if (!correoLimpio) {
+      setError("El correo electrónico es obligatorio.");
+      correoRef.current.focus();
+      return;
+    }
+
+    if (!regexCorreo.test(correoLimpio)) {
+      setError("Ingresa un correo válido.");
+      correoRef.current.focus();
+      return;
+    }
+
+    if (!password) {
+      setError("La contraseña es obligatoria.");
+      passwordRef.current.focus();
+      return;
+    }
+
+    if (!confirmar) {
+      setError("Debes confirmar la contraseña.");
+      confirmarRef.current.focus();
+      return;
+    }
+
+    if (password.length < 10) {
+      setError("La contraseña debe tener al menos 10 caracteres.");
+      passwordRef.current.focus();
       return;
     }
 
     if (password !== confirmar) {
-      setError("Las contraseñas no coinciden");
+      setError("Las contraseñas no coinciden.");
+      confirmarRef.current.focus();
       return;
     }
 
     setLoading(true);
 
     const res = await registrarUsuario(
-      nombre,
-      apellido,
-      correo,
+      nombreLimpio,
+      apellidoLimpio,
+      correoLimpio,
       password
     );
 
     setLoading(false);
 
     if (!res.ok) {
-      setError(res.mensaje);
-
-      setNombre("");
-      setApellido("");
-      setCorreo("");
-      setPassword("");
-      setConfirmar("");
+      setError(res.mensaje || "No se pudo registrar el usuario.");
+      correoRef.current.focus();
       return;
     }
 
-    setMensaje("Usuario registrado correctamente");
+    setMensaje("Usuario registrado correctamente.");
 
     setNombre("");
     setApellido("");
@@ -83,33 +141,50 @@ const Registro = () => {
         {mensaje && <p className="login-success">{mensaje}</p>}
 
         <input
+          ref={nombreRef}
           className="login-input"
           placeholder="Nombre"
           value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
+          onChange={(e) => {
+            setNombre(e.target.value);
+            limpiarMensajes();
+          }}
         />
 
         <input
+          ref={apellidoRef}
           className="login-input"
           placeholder="Apellido"
           value={apellido}
-          onChange={(e) => setApellido(e.target.value)}
+          onChange={(e) => {
+            setApellido(e.target.value);
+            limpiarMensajes();
+          }}
         />
 
         <input
+          ref={correoRef}
+          type="email"
           className="login-input"
           placeholder="Correo electrónico"
           value={correo}
-          onChange={(e) => setCorreo(e.target.value)}
+          onChange={(e) => {
+            setCorreo(e.target.value);
+            limpiarMensajes();
+          }}
         />
 
         <div className="password-box">
           <input
+            ref={passwordRef}
             type={mostrar1 ? "text" : "password"}
             className="login-input password-input"
             placeholder="Contraseña"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              limpiarMensajes();
+            }}
           />
 
           <button
@@ -123,11 +198,15 @@ const Registro = () => {
 
         <div className="password-box">
           <input
+            ref={confirmarRef}
             type={mostrar2 ? "text" : "password"}
             className="login-input password-input"
             placeholder="Confirmar contraseña"
             value={confirmar}
-            onChange={(e) => setConfirmar(e.target.value)}
+            onChange={(e) => {
+              setConfirmar(e.target.value);
+              limpiarMensajes();
+            }}
           />
 
           <button
