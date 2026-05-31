@@ -9,7 +9,7 @@ export const loginUsuario = async (correo_electronico, contrasena) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        correo_electronico,
+        correo_electronico: correo_electronico.trim().toLowerCase(),
         contrasena,
       }),
     });
@@ -19,7 +19,7 @@ export const loginUsuario = async (correo_electronico, contrasena) => {
     if (!response.ok) {
       return {
         ok: false,
-        mensaje: data.mensaje,
+        mensaje: data.mensaje || "No se pudo iniciar sesión",
       };
     }
 
@@ -52,9 +52,9 @@ export const registrarUsuario = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        nombre,
-        apellido,
-        correo_electronico,
+        nombre: nombre.trim(),
+        apellido: apellido.trim(),
+        correo_electronico: correo_electronico.trim().toLowerCase(),
         contrasena,
       }),
     });
@@ -92,7 +92,7 @@ export const recuperarPassword = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        correo_electronico,
+        correo_electronico: correo_electronico.trim().toLowerCase(),
         nueva_contrasena,
       }),
     });

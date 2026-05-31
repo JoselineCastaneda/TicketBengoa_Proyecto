@@ -17,7 +17,7 @@ const Login = () => {
     setError("");
 
     const correoLimpio = correo.trim().toLowerCase();
-    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regexCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!correoLimpio) {
       setError("El correo electrónico es obligatorio.");
@@ -40,10 +40,10 @@ const Login = () => {
 
     setLoading(false);
 
-    if (!res.ok) {
-      setError("Correo o contraseña incorrectos.");
+   if (!res.ok) {
+      setError(res.mensaje);
       return;
-    }
+}
 
     if (res.usuario.rol === "administrador") {
       navigate("/admin");
